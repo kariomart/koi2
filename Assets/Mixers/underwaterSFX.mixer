@@ -1,0 +1,115 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!241 &24100000
+AudioMixerController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: underwaterSFX
+  m_OutputGroup: {fileID: 0}
+  m_MasterGroup: {fileID: 24300002}
+  m_Snapshots:
+  - {fileID: 24500006}
+  m_StartSnapshot: {fileID: 24500006}
+  m_SuspendThreshold: -80
+  m_EnableSuspend: 1
+  m_UpdateMode: 0
+  m_ExposedParameters: []
+  m_AudioMixerGroupViews:
+  - guids:
+    - 372deaa130a9942c59ef71b85259a42f
+    name: View
+  m_CurrentViewIndex: 0
+  m_TargetSnapshot: {fileID: 24500006}
+--- !u!243 &24300002
+AudioMixerGroupController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Master
+  m_AudioMixer: {fileID: 24100000}
+  m_GroupID: 372deaa130a9942c59ef71b85259a42f
+  m_Children: []
+  m_Volume: 3754943553c5b4063908342d72fb7431
+  m_Pitch: 559d5de9281e640b789013d9303bffee
+  m_Effects:
+  - {fileID: 24400004}
+  - {fileID: 244162340258510916}
+  - {fileID: 244156065519426166}
+  m_UserColorIndex: 0
+  m_Mute: 0
+  m_Solo: 0
+  m_BypassEffects: 0
+--- !u!244 &24400004
+AudioMixerEffectController:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_EffectID: 729d45c0337e540309cd27e77591025d
+  m_EffectName: Attenuation
+  m_MixLevel: 90051cc3ac75d4dd0a60cfcf7646915c
+  m_Parameters: []
+  m_SendTarget: {fileID: 0}
+  m_EnableWetMix: 0
+  m_Bypass: 0
+--- !u!245 &24500006
+AudioMixerSnapshotController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Snapshot
+  m_AudioMixer: {fileID: 24100000}
+  m_SnapshotID: 19b8f86706d3140b2873bd18cc38ca04
+  m_FloatValues:
+    d4fc802038e70456595c252ef3096930: 0.5
+    3754943553c5b4063908342d72fb7431: 0
+    bda2b30b3339e414d9045e523852f33b: 100
+    fe376f6ec13ab48f1ad7505388588527: 500
+  m_TransitionOverrides: {}
+--- !u!244 &244156065519426166
+AudioMixerEffectController:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_EffectID: 25936f3abb2104b5580fd8c1b2aa92e9
+  m_EffectName: Echo
+  m_MixLevel: 16402711705f34524a26911dff7067d2
+  m_Parameters:
+  - m_ParameterName: Delay
+    m_GUID: bda2b30b3339e414d9045e523852f33b
+  - m_ParameterName: Decay
+    m_GUID: d4fc802038e70456595c252ef3096930
+  - m_ParameterName: Max channels
+    m_GUID: b956cd76d272e4feb8298ae722ea021d
+  - m_ParameterName: Drymix
+    m_GUID: 8c250beffb99f4249a31881f058f56b5
+  - m_ParameterName: Wetmix
+    m_GUID: 6684432f900904373be5369afd966a1b
+  m_SendTarget: {fileID: 0}
+  m_EnableWetMix: 0
+  m_Bypass: 1
+--- !u!244 &244162340258510916
+AudioMixerEffectController:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_EffectID: cc6c2260ef75142a8a7a93d589c0ac31
+  m_EffectName: Lowpass
+  m_MixLevel: ab003b76778d24028af590f39454f0f8
+  m_Parameters:
+  - m_ParameterName: Cutoff freq
+    m_GUID: fe376f6ec13ab48f1ad7505388588527
+  - m_ParameterName: Resonance
+    m_GUID: be1dc22f9c8b844738789c2dc32e7a57
+  m_SendTarget: {fileID: 0}
+  m_EnableWetMix: 0
+  m_Bypass: 0
