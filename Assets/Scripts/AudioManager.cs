@@ -272,9 +272,21 @@ public class AudioManager : MonoBehaviour {
 
 	public void openSequencerFilter() {
 
-		float lowPassVal;
+		float lowPassVal, vol, sfxvol, usfxvol;
 		sequencers.GetFloat("lowPassFreq", out lowPassVal);
-		sequencers.SetFloat("lowPassFreq", lowPassVal+=5);
+
+		sequencers.GetFloat("Volume", out vol);
+		sfxMaster.GetFloat("volume", out sfxvol);
+		underwaterSFXMaster.GetFloat("volume", out usfxvol);
+
+		if (vol < 0) {
+			sequencers.SetFloat("Volume", vol+=0.05f);
+		}
+
+		sequencers.SetFloat("lowPassFreq", lowPassVal+=3f);
+
+		sfxMaster.SetFloat("volume", sfxvol-=0.1f);
+		underwaterSFXMaster.SetFloat("Volume", usfxvol-=0.1f);
 
 	}
 

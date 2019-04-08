@@ -137,10 +137,12 @@ public class GameMaster : MonoBehaviour {
 
 	public IEnumerator playFriendNotes() {
 
-		float t = .25f * Random.Range(0,4);
+		float t = .25f * Random.Range(0,2);
 		yield return new WaitForSeconds(t);
-
-		foreach (KoiFriend k in player.friends)
+		List<KoiFriend> tempKoi = new List<KoiFriend>();
+		tempKoi = player.friends;
+		
+		foreach (KoiFriend k in tempKoi)
 		{
 			//Debug.Log("played note");
 			k.playNote();

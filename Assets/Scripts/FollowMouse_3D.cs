@@ -9,6 +9,7 @@ public class FollowMouse_3D : MonoBehaviour {
     Camera cam;
     Transform reticle;
     AudioSource waterSfx;
+    public SphereCollider sphere;
     public GameObject foodRipple;
     public bool goingUp;
     public bool goingDown;
@@ -46,6 +47,7 @@ public class FollowMouse_3D : MonoBehaviour {
     void Start () {
         
         reticle = GameObject.Find("reticle").transform;
+        sphere = GetComponent<SphereCollider>();
         Cursor.visible = false;
         cam = Camera.main;
         waterSfx = GetComponent<AudioSource>();
@@ -183,7 +185,7 @@ public class FollowMouse_3D : MonoBehaviour {
         if (vol <= .045f) {
             vol = .015f;
         }
-        waterSfx.volume = vol ;
+        waterSfx.volume = vol;
 
 		// if (transform.position.x < Camera.main.transform.position.x) {dis *= -1;}
 		// float pan = AudioManager.RemapFloat(dis, -5f, 5f, -1f, 1f);

@@ -39,17 +39,19 @@ public class KoiFriendSynth : MonoBehaviour
         } else {
             if (!GameMaster.me.gameover) {
                 GameMaster.me.gameover=true;
+                GameMaster.me.player.sphere.enabled = false;
                 GameMaster.me.enableSequencers();
                 AudioManager.Instance.sequencers.SetFloat("lowPassFreq", 0);
+                AudioManager.Instance.sequencers.SetFloat("Volume",-40);
             }
         }
 
         if (scNote < 32) {
-           GameMaster.me.sequencerChords.AddNote(note-24, scNote, scNote+4, Mathf.Clamp(strength,.2f,.5f)); 
+           GameMaster.me.sequencerChords.AddNote(note-31, scNote, scNote+8, Mathf.Clamp(strength,.2f,.5f)); 
         }
 
         if (sNote % 4 == 0 && sNote != 0) {
-            GameMaster.me.sequencerChordsNote+=4;
+            GameMaster.me.sequencerChordsNote+=8;
         }
 
 
