@@ -15,7 +15,6 @@ public class KoiFriendSynth : MonoBehaviour
     void Start()
     {
         synth = GetComponent<HelmController>();
-        
     }
 
     // Update is called once per frame
@@ -32,6 +31,17 @@ public class KoiFriendSynth : MonoBehaviour
 
         float strength = Random.Range(.2f, 1.0f);
         float length = Random.Range(.1f, .3f);
+        synth.NoteOn(note, strength, length);
+
+    }
+
+    public void playNote(float length) {
+
+        int note;
+
+        note = minNote + scale[Random.Range(0,scale.Length)] + (12*Random.Range(0, octaveSpan));
+
+        float strength = Random.Range(.2f, 1.0f);
         synth.NoteOn(note, strength, length);
 
     }

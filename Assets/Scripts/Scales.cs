@@ -12,8 +12,8 @@ public class Scales : MonoBehaviour {
 	void Start () {
 
 		pentatonicScale = transform.GetChild(0).gameObject.GetComponent<Scale>().scales;
-		dorianScales = transform.GetChild(1).gameObject.GetComponent<Scale>().scales;
-		mixolydianScales = transform.GetChild(2).gameObject.GetComponent<Scale>().scales;
+		//dorianScales = transform.GetChild(1).gameObject.GetComponent<Scale>().scales;
+		//mixolydianScales = transform.GetChild(2).gameObject.GetComponent<Scale>().scales;
 		
 	}
 	

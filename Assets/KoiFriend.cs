@@ -23,7 +23,7 @@ public class KoiFriend : MonoBehaviour
     void Start()
     {
         player = GameMaster.me.player;
-        sfx = GameObject.Find("FriendSFX").GetComponent<KoiFriendSynth>();
+        sfx = GameMaster.me.koiFriendSynth.gameObject.GetComponent<KoiFriendSynth>();
         particles = GetComponent<ParticleSystem>();
     }
 
@@ -58,6 +58,12 @@ public class KoiFriend : MonoBehaviour
 
     public void playNote() {
         sfx.playNote();
+        addSize();
+    }
+
+
+    public void playNote(float length) {
+        sfx.playNote(length);
         addSize();
     }
 

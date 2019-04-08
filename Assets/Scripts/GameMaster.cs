@@ -16,8 +16,12 @@ public class GameMaster : MonoBehaviour {
 	public bool raining;
 
 	public GameObject rainRipple;
-	public RainSynth rainSynth;
+	public RainSynth rainSynthController;
 	int dropChance = 150;
+
+	public HelmController rainSynth;
+	public HelmController koiFriendSynth;
+	public HelmController whaleSynth;
 
 
 
@@ -56,7 +60,7 @@ public class GameMaster : MonoBehaviour {
 		rand = Random.Range(0, rainChance);
 		if (rand == 5 && !raining) {
 			AudioManager.Instance.playRain();
-			AudioManager.Instance.scaleNum = 2;
+			//AudioManager.Instance.scaleNum = 2;
 			raining = true;
 		}
 
@@ -68,8 +72,8 @@ public class GameMaster : MonoBehaviour {
 			if (rand == 0) {
 				//Instantiate(rainRipple, player.transform.position, Quaternion.identity);
 				GameObject r = Instantiate(rainRipple, new Vector3(player.transform.position.x-7+Random.Range(0f,14f),player.transform.position.y-4+Random.Range(0f,8), player.transform.position.z), Quaternion.identity);
-				r.transform.SetParent(rainSynth.transform);
-				rainSynth.playNote();
+				r.transform.SetParent(rainSynthController.transform);
+				rainSynthController.playNote();
 				if (dropChance > 6) {
 					dropChance -= 5;
 				}
@@ -100,14 +104,16 @@ public class GameMaster : MonoBehaviour {
 
 		float t = .25f * Random.Range(0,4);
 		yield return new WaitForSeconds(t);
-		foreach (KoiFriend k in player.friends)
-		{
-			//Debug.Log("played note");
-			k.playNote();
-			player.effects.addBloom(.3f);
-			yield return new WaitForSeconds(t);
-		}
 
+		if (player.friends.Count > 0) {
+			foreach (KoiFriend k in player.friends)
+			{
+				//Debug.Log("played note");
+				k.playNote();
+				player.effects.addBloom(.3f);
+				yield return new WaitForSeconds(t);
+			}
+		}
 	}
 
 }

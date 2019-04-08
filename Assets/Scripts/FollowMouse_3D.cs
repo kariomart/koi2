@@ -5,6 +5,7 @@ using UnityEngine;
 public class FollowMouse_3D : MonoBehaviour {
 
     public float moveSpeed = 0.004f;
+    public Vector2 pos;
     Camera cam;
     Transform reticle;
     AudioSource waterSfx;
@@ -55,6 +56,7 @@ public class FollowMouse_3D : MonoBehaviour {
   // Update is called once per frame
   void FixedUpdate () {
 
+        pos = new Vector2(transform.position.x, transform.position.z);
         //checkPosition();
         waterSounds();
         //spawnRipple();
