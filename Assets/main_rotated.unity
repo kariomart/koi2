@@ -429,9 +429,11 @@ MonoBehaviour:
   abstractAmbience: {fileID: 24300002, guid: d3a8bdee8538c40c39771c1a16c17601, type: 2}
   sfxMixer: {fileID: 24300002, guid: 5d00f3c34b07242c6af0db9eb8311a86, type: 2}
   underwaterSFXMixer: {fileID: 24300002, guid: d1e64dcf250be4dbabb86127fc2a0a95, type: 2}
+  sequencerMixers: {fileID: 24300002, guid: b93a99d4f7c694f909aeb26479e2f374, type: 2}
   ambienceMaster: {fileID: 0}
   sfxMaster: {fileID: 0}
   underwaterSFXMaster: {fileID: 0}
+  sequencers: {fileID: 0}
   FX: {fileID: 1328970171}
   debug: {fileID: 2054476904}
   activeSFX: []
@@ -703,9 +705,9 @@ AudioSource:
   m_GameObject: {fileID: 139459007}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 243298949409439130, guid: efd023840a07a4b7eba5dee216f99c52,
+  OutputAudioMixerGroup: {fileID: 243401828347252486, guid: b93a99d4f7c694f909aeb26479e2f374,
     type: 2}
-  m_audioClip: {fileID: 2143113598}
+  m_audioClip: {fileID: 1585009849}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -798,12 +800,47 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 139459007}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
+  m_Father: {fileID: 162269849}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &162269848
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 162269849}
+  m_Layer: 0
+  m_Name: SYNTHS
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &162269849
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 162269848}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1472807476}
+  - {fileID: 139459013}
+  - {fileID: 1432550234}
+  - {fileID: 900961600}
+  - {fileID: 1438385537}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &251558736 stripped
 Transform:
@@ -979,18 +1016,6 @@ MonoBehaviour:
   m_BeforeTransparentBundles: []
   m_BeforeStackBundles: []
   m_AfterStackBundles: []
---- !u!114 &342153695 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8284064235065260855, guid: 5d43e10581a30429489e98618974b599,
-    type: 3}
-  m_PrefabInstance: {fileID: 1248650557}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 423be98c30f194dfe9b52a5349fb9789, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &470531847
 GameObject:
   m_ObjectHideFlags: 0
@@ -1037,34 +1062,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!83 &527541597
-AudioClip:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: helm
-  m_LoadType: 0
-  m_Channels: 1
-  m_Frequency: 44100
-  m_BitsPerSample: 32
-  m_Length: 0
-  m_IsTrackerFormat: 0
-  m_Ambisonic: 0
-  m_SubsoundIndex: 0
-  m_PreloadAudioData: 1
-  m_LoadInBackground: 0
-  m_Legacy3D: 0
-  m_Resource:
-    m_Source: 
-    m_Offset: 0
-    m_Size: 0
-  m_CompressionFormat: 0
-  m_EditorResource:
-    m_Source: 
-    m_Offset: 0
-    m_Size: 0
-  m_EditorCompressionFormat: 0
 --- !u!4 &536959550 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4018066037419308, guid: 332bec87b3679447db197a798ebeb895,
@@ -1191,12 +1188,9 @@ MonoBehaviour:
   line: {fileID: 0}
   water: {fileID: 809561412}
   effects: {fileID: 1328970171}
-  friends:
-  - {fileID: 342153695}
-  - {fileID: 2070868656}
-  - {fileID: 1644056282}
-  - {fileID: 1596479629}
+  friends: []
   foodCounter: 0
+  friendCounter: 16
 --- !u!54 &671200355
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -6116,6 +6110,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: KoiFriend (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 8284064235065260848, guid: 5d43e10581a30429489e98618974b599,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8284064235065260808, guid: 5d43e10581a30429489e98618974b599,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -6154,7 +6153,7 @@ PrefabInstance:
     - target: {fileID: 8284064235065260808, guid: 5d43e10581a30429489e98618974b599,
         type: 3}
       propertyPath: m_RootOrder
-      value: 15
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 8284064235065260808, guid: 5d43e10581a30429489e98618974b599,
         type: 3}
@@ -6173,6 +6172,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5d43e10581a30429489e98618974b599, type: 3}
+--- !u!83 &769984562
+AudioClip:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: helm
+  m_LoadType: 0
+  m_Channels: 1
+  m_Frequency: 44100
+  m_BitsPerSample: 32
+  m_Length: 0
+  m_IsTrackerFormat: 0
+  m_Ambisonic: 0
+  m_SubsoundIndex: 0
+  m_PreloadAudioData: 1
+  m_LoadInBackground: 0
+  m_Legacy3D: 0
+  m_Resource:
+    m_Source: 
+    m_Offset: 0
+    m_Size: 0
+  m_CompressionFormat: 0
+  m_EditorResource:
+    m_Source: 
+    m_Offset: 0
+    m_Size: 0
+  m_EditorCompressionFormat: 0
 --- !u!1 &809561412 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1848242464929142, guid: 332bec87b3679447db197a798ebeb895,
@@ -6481,7 +6508,6 @@ GameObject:
   - component: {fileID: 900961598}
   - component: {fileID: 900961597}
   - component: {fileID: 900961596}
-  - component: {fileID: 900961595}
   m_Layer: 0
   m_Name: Sequencer
   m_TagString: Untagged
@@ -6489,22 +6515,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &900961595
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 900961594}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 052b536e9e8ca4950ace6c2eb51e1c89, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  synth: {fileID: 0}
-  scale: 0000000002000000040000000700000009000000
-  minNote: 36
-  octaveSpan: 2
 --- !u!114 &900961596
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6532,7 +6542,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: AudioHelm.Sequencer+BeatEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  length: 32
+  length: 128
   currentIndex: -1
   loop: 1
   allNotes:
@@ -6722,9 +6732,9 @@ AudioSource:
   m_GameObject: {fileID: 900961594}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 243720944480527970, guid: e18daf0b73c26446f857724aefc13f65,
+  OutputAudioMixerGroup: {fileID: 243683997119860942, guid: b93a99d4f7c694f909aeb26479e2f374,
     type: 2}
-  m_audioClip: {fileID: 527541597}
+  m_audioClip: {fileID: 769984562}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -6817,12 +6827,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 900961594}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_Father: {fileID: 162269849}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &918164107
 GameObject:
@@ -6896,6 +6906,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: KoiFriend
       objectReference: {fileID: 0}
+    - target: {fileID: 8284064235065260848, guid: 5d43e10581a30429489e98618974b599,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8284064235065260808, guid: 5d43e10581a30429489e98618974b599,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -6934,7 +6949,7 @@ PrefabInstance:
     - target: {fileID: 8284064235065260808, guid: 5d43e10581a30429489e98618974b599,
         type: 3}
       propertyPath: m_RootOrder
-      value: 17
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 8284064235065260808, guid: 5d43e10581a30429489e98618974b599,
         type: 3}
@@ -6953,34 +6968,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5d43e10581a30429489e98618974b599, type: 3}
---- !u!83 &1136256144
-AudioClip:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: helm
-  m_LoadType: 0
-  m_Channels: 1
-  m_Frequency: 44100
-  m_BitsPerSample: 32
-  m_Length: 0
-  m_IsTrackerFormat: 0
-  m_Ambisonic: 0
-  m_SubsoundIndex: 0
-  m_PreloadAudioData: 1
-  m_LoadInBackground: 0
-  m_Legacy3D: 0
-  m_Resource:
-    m_Source: 
-    m_Offset: 0
-    m_Size: 0
-  m_CompressionFormat: 0
-  m_EditorResource:
-    m_Source: 
-    m_Offset: 0
-    m_Size: 0
-  m_EditorCompressionFormat: 0
 --- !u!1001 &1248650557
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6992,6 +6979,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: KoiFriend (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8284064235065260848, guid: 5d43e10581a30429489e98618974b599,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8284064235065260808, guid: 5d43e10581a30429489e98618974b599,
         type: 3}
@@ -7031,7 +7023,7 @@ PrefabInstance:
     - target: {fileID: 8284064235065260808, guid: 5d43e10581a30429489e98618974b599,
         type: 3}
       propertyPath: m_RootOrder
-      value: 14
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8284064235065260808, guid: 5d43e10581a30429489e98618974b599,
         type: 3}
@@ -7287,6 +7279,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffe4141b4ce36485a9f23b5a35553fe3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!83 &1359523286
+AudioClip:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: helm
+  m_LoadType: 0
+  m_Channels: 1
+  m_Frequency: 44100
+  m_BitsPerSample: 32
+  m_Length: 0
+  m_IsTrackerFormat: 0
+  m_Ambisonic: 0
+  m_SubsoundIndex: 0
+  m_PreloadAudioData: 1
+  m_LoadInBackground: 0
+  m_Legacy3D: 0
+  m_Resource:
+    m_Source: 
+    m_Offset: 0
+    m_Size: 0
+  m_CompressionFormat: 0
+  m_EditorResource:
+    m_Source: 
+    m_Offset: 0
+    m_Size: 0
+  m_EditorCompressionFormat: 0
 --- !u!1 &1432550228
 GameObject:
   m_ObjectHideFlags: 0
@@ -7351,7 +7371,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: AudioHelm.Sequencer+BeatEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  length: 16
+  length: 64
   currentIndex: -1
   loop: 1
   allNotes:
@@ -7487,7 +7507,7 @@ MonoBehaviour:
   autoScroll: 0
   division: 1
   zoom: 0.3
-  channel: 0
+  channel: 2
 --- !u!114 &1432550231
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7541,9 +7561,9 @@ AudioSource:
   m_GameObject: {fileID: 1432550228}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 243143751943844518, guid: 8faf8be739daa48ef973a3ffb3d0a16b,
+  OutputAudioMixerGroup: {fileID: 243295411986745142, guid: b93a99d4f7c694f909aeb26479e2f374,
     type: 2}
-  m_audioClip: {fileID: 1136256144}
+  m_audioClip: {fileID: 1871348202}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -7636,13 +7656,352 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1432550228}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_Father: {fileID: 162269849}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1438385536
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1438385537}
+  - component: {fileID: 1438385542}
+  - component: {fileID: 1438385541}
+  - component: {fileID: 1438385540}
+  - component: {fileID: 1438385539}
+  m_Layer: 0
+  m_Name: SequencerChords
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1438385537
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1438385536}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 162269849}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1438385539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1438385536}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03c2100a494de423e9975762c775cfac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  noteOnEvent:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: AudioHelm.Sequencer+NoteEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  noteOffEvent:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: AudioHelm.Sequencer+NoteEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  beatEvent:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: AudioHelm.Sequencer+BeatEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+  length: 32
+  currentIndex: -1
+  loop: 1
+  allNotes:
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  - notes: []
+  scrollPosition: {x: 0, y: 174.00146}
+  autoScroll: 0
+  division: 1
+  zoom: 0.3
+  channel: 14
+--- !u!114 &1438385540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1438385536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e4430ff3452e4a85ac2530e457beb05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  channel: 14
+  synthParamValue0: 0
+  synthParamValue1: 0
+  synthParamValue2: 0
+  synthParamValue3: 0
+  synthParamValue4: 0
+  synthParamValue5: 0
+  synthParamValue6: 0
+  synthParamValue7: 0
+  synthParamValue8: 0
+  synthParamValue9: 0
+  synthParamValue10: 0
+  synthParamValue11: 0
+  synthParamValue12: 0
+  synthParamValue13: 0
+  synthParamValue14: 0
+  synthParamValue15: 0
+  synthParameters: []
+--- !u!114 &1438385541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1438385536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 981c2862dc2a4474b9d748a52426fab6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  synthesizerMixerGroup: {fileID: 0}
+  spatializerMixerGroup: {fileID: 0}
+--- !u!82 &1438385542
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1438385536}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 243986375011715716, guid: b93a99d4f7c694f909aeb26479e2f374,
+    type: 2}
+  m_audioClip: {fileID: 1861028691}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 0
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1440671777
 GameObject:
   m_ObjectHideFlags: 0
@@ -7811,7 +8170,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: AudioHelm.Sequencer+BeatEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
-  length: 16
+  length: 256
   currentIndex: -1
   loop: 1
   allNotes:
@@ -8001,9 +8360,9 @@ AudioSource:
   m_GameObject: {fileID: 1472807470}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 243475795402799778, guid: 5d00f3c34b07242c6af0db9eb8311a86,
+  OutputAudioMixerGroup: {fileID: 243529131276817052, guid: b93a99d4f7c694f909aeb26479e2f374,
     type: 2}
-  m_audioClip: {fileID: 1595424417}
+  m_audioClip: {fileID: 1359523286}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -8096,12 +8455,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1472807470}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_Father: {fileID: 162269849}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1473971223
 GameObject:
@@ -8231,6 +8590,34 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!83 &1585009849
+AudioClip:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: helm
+  m_LoadType: 0
+  m_Channels: 1
+  m_Frequency: 44100
+  m_BitsPerSample: 32
+  m_Length: 0
+  m_IsTrackerFormat: 0
+  m_Ambisonic: 0
+  m_SubsoundIndex: 0
+  m_PreloadAudioData: 1
+  m_LoadInBackground: 0
+  m_Legacy3D: 0
+  m_Resource:
+    m_Source: 
+    m_Offset: 0
+    m_Size: 0
+  m_CompressionFormat: 0
+  m_EditorResource:
+    m_Source: 
+    m_Offset: 0
+    m_Size: 0
+  m_EditorCompressionFormat: 0
 --- !u!1 &1592205309
 GameObject:
   m_ObjectHideFlags: 0
@@ -12929,58 +13316,6 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
---- !u!83 &1595424417
-AudioClip:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: helm
-  m_LoadType: 0
-  m_Channels: 1
-  m_Frequency: 44100
-  m_BitsPerSample: 32
-  m_Length: 0
-  m_IsTrackerFormat: 0
-  m_Ambisonic: 0
-  m_SubsoundIndex: 0
-  m_PreloadAudioData: 1
-  m_LoadInBackground: 0
-  m_Legacy3D: 0
-  m_Resource:
-    m_Source: 
-    m_Offset: 0
-    m_Size: 0
-  m_CompressionFormat: 0
-  m_EditorResource:
-    m_Source: 
-    m_Offset: 0
-    m_Size: 0
-  m_EditorCompressionFormat: 0
---- !u!114 &1596479629 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8284064235065260855, guid: 5d43e10581a30429489e98618974b599,
-    type: 3}
-  m_PrefabInstance: {fileID: 931318965}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 423be98c30f194dfe9b52a5349fb9789, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1644056282 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8284064235065260855, guid: 5d43e10581a30429489e98618974b599,
-    type: 3}
-  m_PrefabInstance: {fileID: 1797569678}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 423be98c30f194dfe9b52a5349fb9789, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1655250081
 GameObject:
   m_ObjectHideFlags: 0
@@ -13015,9 +13350,10 @@ MonoBehaviour:
   gameState: {fileID: 114078069459582498, guid: 978bcfc1d2da042099993f783e20f7be,
     type: 3}
   sfxChance: 1000
+  effects: {fileID: 1328970171}
   rainChance: 2000
   rainStopChance: 2000
-  whaleSpawnChance: 1000
+  whaleSpawnChance: 500
   raining: 0
   rainRipple: {fileID: 1483678769756440, guid: c1e4e79655b5a4c33bc5bfd8eeb24fc4, type: 3}
   rainSynthController: {fileID: 1472807471}
@@ -13029,9 +13365,13 @@ MonoBehaviour:
   whalePrefab: {fileID: 8090476827209474113, guid: e3cf6b98145504d778fbe360ad88588a,
     type: 3}
   sequencer: {fileID: 900961596}
-  whaleSequencer: {fileID: 0}
+  sequencerChords: {fileID: 1438385539}
+  whaleSequencer: {fileID: 1432550230}
+  rainSequencer: {fileID: 1472807472}
   sequencerNote: 0
+  sequencerChordsNote: 0
   whaleSeqNote: 0
+  gameover: 0
 --- !u!4 &1655250083
 Transform:
   m_ObjectHideFlags: 0
@@ -13059,6 +13399,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: KoiFriend (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8284064235065260848, guid: 5d43e10581a30429489e98618974b599,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8284064235065260808, guid: 5d43e10581a30429489e98618974b599,
         type: 3}
@@ -13098,7 +13443,7 @@ PrefabInstance:
     - target: {fileID: 8284064235065260808, guid: 5d43e10581a30429489e98618974b599,
         type: 3}
       propertyPath: m_RootOrder
-      value: 16
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 8284064235065260808, guid: 5d43e10581a30429489e98618974b599,
         type: 3}
@@ -13117,6 +13462,62 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5d43e10581a30429489e98618974b599, type: 3}
+--- !u!83 &1861028691
+AudioClip:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: helm
+  m_LoadType: 0
+  m_Channels: 1
+  m_Frequency: 44100
+  m_BitsPerSample: 32
+  m_Length: 0
+  m_IsTrackerFormat: 0
+  m_Ambisonic: 0
+  m_SubsoundIndex: 0
+  m_PreloadAudioData: 1
+  m_LoadInBackground: 0
+  m_Legacy3D: 0
+  m_Resource:
+    m_Source: 
+    m_Offset: 0
+    m_Size: 0
+  m_CompressionFormat: 0
+  m_EditorResource:
+    m_Source: 
+    m_Offset: 0
+    m_Size: 0
+  m_EditorCompressionFormat: 0
+--- !u!83 &1871348202
+AudioClip:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: helm
+  m_LoadType: 0
+  m_Channels: 1
+  m_Frequency: 44100
+  m_BitsPerSample: 32
+  m_Length: 0
+  m_IsTrackerFormat: 0
+  m_Ambisonic: 0
+  m_SubsoundIndex: 0
+  m_PreloadAudioData: 1
+  m_LoadInBackground: 0
+  m_Legacy3D: 0
+  m_Resource:
+    m_Source: 
+    m_Offset: 0
+    m_Size: 0
+  m_CompressionFormat: 0
+  m_EditorResource:
+    m_Source: 
+    m_Offset: 0
+    m_Size: 0
+  m_EditorCompressionFormat: 0
 --- !u!1 &1883158294
 GameObject:
   m_ObjectHideFlags: 0
@@ -18270,43 +18671,3 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &2070868656 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8284064235065260855, guid: 5d43e10581a30429489e98618974b599,
-    type: 3}
-  m_PrefabInstance: {fileID: 673783504}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 423be98c30f194dfe9b52a5349fb9789, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!83 &2143113598
-AudioClip:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: helm
-  m_LoadType: 0
-  m_Channels: 1
-  m_Frequency: 44100
-  m_BitsPerSample: 32
-  m_Length: 0
-  m_IsTrackerFormat: 0
-  m_Ambisonic: 0
-  m_SubsoundIndex: 0
-  m_PreloadAudioData: 1
-  m_LoadInBackground: 0
-  m_Legacy3D: 0
-  m_Resource:
-    m_Source: 
-    m_Offset: 0
-    m_Size: 0
-  m_CompressionFormat: 0
-  m_EditorResource:
-    m_Source: 
-    m_Offset: 0
-    m_Size: 0
-  m_EditorCompressionFormat: 0

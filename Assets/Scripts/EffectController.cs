@@ -52,7 +52,15 @@ public class EffectController : MonoBehaviour
     }
 
     public void addBloom(float amt) {
-        bloomLayer.intensity.value += amt;
+        if (bloomLayer.intensity.value < 100) {
+            bloomLayer.intensity.value += amt;
+        }
+    }
+
+    public void addExposure(float amt) {
+        if (colorGradingLayer.postExposure.value < 15) {
+            colorGradingLayer.postExposure.value += amt;
+        }
     }
 
     public void setBloom(float depth) {
@@ -71,6 +79,7 @@ public class EffectController : MonoBehaviour
     public void StartPumpingBloom() {
         StartCoroutine("PumpBloom");
     }
+
 
     public IEnumerator PumpBloom() 
     {   

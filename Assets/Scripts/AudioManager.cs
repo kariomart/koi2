@@ -39,9 +39,11 @@ public class AudioManager : MonoBehaviour {
 	public AudioMixerGroup abstractAmbience;
 	public AudioMixerGroup sfxMixer;
 	public AudioMixerGroup underwaterSFXMixer;
+	public AudioMixerGroup sequencerMixers;
 	public AudioMixer ambienceMaster;
 	public AudioMixer sfxMaster;
 	public AudioMixer underwaterSFXMaster;
+	public AudioMixer sequencers;
 
 	//Mixer snapshots let us crossfade easily between game states.
 	//We can also add weights to multiple snapshots in order to blend them.
@@ -84,6 +86,7 @@ public class AudioManager : MonoBehaviour {
 		ambienceMaster = abstractAmbience.audioMixer;
 		sfxMaster = sfxMixer.audioMixer;
 		underwaterSFXMaster = underwaterSFXMixer.audioMixer;
+		sequencers = sequencerMixers.audioMixer;
 		setMixDefaults();
 		// if (SceneManager.GetActiveScene().name == "Menu") {
 		// 	StartMenu();
@@ -264,6 +267,14 @@ public class AudioManager : MonoBehaviour {
 		sfxMaster.SetFloat("lowPassFreq", 500f);
 		sfxMaster.SetFloat("distortionLevel", 0.1f);
 		sfxMaster.SetFloat("chorusMix", .5f);
+
+	}
+
+	public void openSequencerFilter() {
+
+		float lowPassVal;
+		sequencers.GetFloat("lowPassFreq", out lowPassVal);
+		sequencers.SetFloat("lowPassFreq", lowPassVal+=5);
 
 	}
 

@@ -10,6 +10,7 @@ public class GameMaster : MonoBehaviour {
 	public GameState[] gameStates;
 	public GameState gameState;
 	public int sfxChance;
+	public EffectController effects;
 
 	public int rainChance;
 	public int rainStopChance;
@@ -28,11 +29,14 @@ public class GameMaster : MonoBehaviour {
 	public GameObject whalePrefab;
 
 	public HelmSequencer sequencer;
+	public HelmSequencer sequencerChords;
 	public HelmSequencer whaleSequencer;
+	public HelmSequencer rainSequencer;
 	public int sequencerNote;
+	public int sequencerChordsNote;
 	public int whaleSeqNote;
-
-
+	
+	public bool gameover;
 
 	// Use this for initialization
 	void Start () {
@@ -49,9 +53,11 @@ public class GameMaster : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate () {
 
-		AudioManager.Instance.updateFilters();
-        AudioManager.Instance.updateFX();
-		AudioManager.Instance.spatializeSFX();
+		if (!gameover) {
+			AudioManager.Instance.updateFilters();
+			AudioManager.Instance.updateFX();
+			AudioManager.Instance.spatializeSFX();
+		}
 
 		if (Input.GetKeyDown(KeyCode.Q)) {
 			player.enabled=!player.enabled;
@@ -59,7 +65,10 @@ public class GameMaster : MonoBehaviour {
 
 		if (Input.GetKeyDown(KeyCode.W)) {
 			sequencer.enabled=!sequencer.enabled;
+			sequencerChords.enabled=!sequencerChords.enabled;
 			whaleSequencer.enabled=!whaleSequencer.enabled;
+			rainSequencer.enabled=!rainSequencer.enabled;
+			gameover=true;
 		}
 
 		int rand = Random.Range(0, sfxChance);
@@ -86,6 +95,11 @@ public class GameMaster : MonoBehaviour {
 			spawnWhale();
 		}
 
+		if (gameover) {
+			effects.addBloom(.005f);
+			effects.addExposure(.005f);
+			AudioManager.Instance.openSequencerFilter();
+		}
 
 
 		if (raining) {
@@ -112,6 +126,14 @@ public class GameMaster : MonoBehaviour {
 		}	
 		
 	}
+	public void enableSequencers() {
+
+		sequencer.enabled=!sequencer.enabled;
+		sequencerChords.enabled=!sequencerChords.enabled;
+		whaleSequencer.enabled=!whaleSequencer.enabled;
+		rainSequencer.enabled=!rainSequencer.enabled;
+
+	}
 
 	public IEnumerator playFriendNotes() {
 
@@ -122,7 +144,7 @@ public class GameMaster : MonoBehaviour {
 		{
 			//Debug.Log("played note");
 			k.playNote();
-			player.effects.addBloom(.3f);
+			player.effects.addBloom(.15f);
 			yield return new WaitForSeconds(t);
 		}
 		//GameMaster.me.sequencerNote++;
@@ -130,10 +152,11 @@ public class GameMaster : MonoBehaviour {
 
 	public void tryToSpawnFriend() {
 
-		int rand = Random.Range(0,5);
+		int rand = Random.Range(0,3);
 
 		if (rand == 1) {
 			spawnFriend();
+			player.friendCounter -= 4;
 		}
 	}
 

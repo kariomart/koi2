@@ -27,13 +27,31 @@ public class KoiFriendSynth : MonoBehaviour
 
         int note;
         int sNote = GameMaster.me.sequencerNote;
-        note = minNote + scale[Random.Range(0,scale.Length)] + (12*Random.Range(0, octaveSpan));
+        int scNote = GameMaster.me.sequencerChordsNote;
 
+        note = minNote + scale[Random.Range(0,scale.Length)] + (12*Random.Range(0, octaveSpan));
         float strength = Random.Range(.2f, 1.0f);
         float length = Random.Range(.1f, .3f);
         synth.NoteOn(note, strength, length);
-        GameMaster.me.sequencer.AddNote(note-12, sNote, sNote+1, strength);
-        GameMaster.me.sequencerNote++;
+        if (sNote < 128) {
+            GameMaster.me.sequencer.AddNote(note-12, sNote, sNote+1, Mathf.Clamp(strength,.2f,.5f));
+            GameMaster.me.sequencerNote++;
+        } else {
+            if (!GameMaster.me.gameover) {
+                GameMaster.me.gameover=true;
+                GameMaster.me.enableSequencers();
+                AudioManager.Instance.sequencers.SetFloat("lowPassFreq", 0);
+            }
+        }
+
+        if (scNote < 32) {
+           GameMaster.me.sequencerChords.AddNote(note-24, scNote, scNote+4, Mathf.Clamp(strength,.2f,.5f)); 
+        }
+
+        if (sNote % 4 == 0 && sNote != 0) {
+            GameMaster.me.sequencerChordsNote+=4;
+        }
+
 
     }
 
@@ -46,7 +64,9 @@ public class KoiFriendSynth : MonoBehaviour
 
         float strength = Random.Range(.2f, 1.0f);
         synth.NoteOn(note, strength, length);
-        GameMaster.me.whaleSequencer.AddNote(note, sNote, sNote+4, Random.Range(.2f,.4f));
-
+        if (sNote < 16) {
+            GameMaster.me.whaleSequencer.AddNote(note, sNote, sNote+4, Random.Range(.2f,.4f));
+        }
+        GameMaster.me.whaleSeqNote++;
     }
 }

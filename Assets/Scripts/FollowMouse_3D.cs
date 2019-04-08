@@ -39,6 +39,7 @@ public class FollowMouse_3D : MonoBehaviour {
     public List<KoiFriend> friends = new List<KoiFriend>();
     float bloomAmt = .25f;
     public int foodCounter;
+    public int friendCounter = 16;
 
 
     // Use this for initialization
@@ -202,7 +203,7 @@ public class FollowMouse_3D : MonoBehaviour {
             effects.addBloom(bloomAmt);
 			Destroy(coll.gameObject);
 
-            if (foodCounter >= 10) {
+            if (foodCounter >= friendCounter) {
                 GameMaster.me.tryToSpawnFriend();
             }
 		}

@@ -17,6 +17,7 @@ public class RainSynth : MonoBehaviour
     public float maxDensity = 1.0f;
     public float maxSize = 10.0f;
     int counter;
+    int seqNote;
 
     // Start is called before the first frame
 
@@ -104,6 +105,10 @@ public class RainSynth : MonoBehaviour
         float strength = Random.Range(.2f, 1.0f);
         float length = Random.Range(.1f, .3f);
         synth.NoteOn(note, strength, length);
+        if (seqNote < 256) {
+            sequencer.AddNote(note, seqNote,seqNote+1,strength);
+        }
+        seqNote++;
 
 //        Debug.Log(note);
 
