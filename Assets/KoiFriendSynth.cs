@@ -26,23 +26,27 @@ public class KoiFriendSynth : MonoBehaviour
     public void playNote() {
 
         int note;
-
+        int sNote = GameMaster.me.sequencerNote;
         note = minNote + scale[Random.Range(0,scale.Length)] + (12*Random.Range(0, octaveSpan));
 
         float strength = Random.Range(.2f, 1.0f);
         float length = Random.Range(.1f, .3f);
         synth.NoteOn(note, strength, length);
+        GameMaster.me.sequencer.AddNote(note-12, sNote, sNote+1, strength);
+        GameMaster.me.sequencerNote++;
 
     }
 
     public void playNote(float length) {
 
+        int sNote = GameMaster.me.whaleSeqNote;
         int note;
 
         note = minNote + scale[Random.Range(0,scale.Length)] + (12*Random.Range(0, octaveSpan));
 
         float strength = Random.Range(.2f, 1.0f);
         synth.NoteOn(note, strength, length);
+        GameMaster.me.whaleSequencer.AddNote(note, sNote, sNote+4, Random.Range(.2f,.4f));
 
     }
 }

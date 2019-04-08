@@ -37,6 +37,8 @@ public class FollowMouse_3D : MonoBehaviour {
     public EffectController effects;
 
     public List<KoiFriend> friends = new List<KoiFriend>();
+    float bloomAmt = .25f;
+    public int foodCounter;
 
 
     // Use this for initialization
@@ -192,10 +194,17 @@ public class FollowMouse_3D : MonoBehaviour {
 
 		if (coll.gameObject.layer == LayerMask.NameToLayer("Food")) {
             AudioManager.Instance.PlayFoodSound();
-            GameMaster.me.StartCoroutine("playFriendNotes");
+            foodCounter++;
+            if (friends.Count > 0) {
+                GameMaster.me.StartCoroutine("playFriendNotes");
+            }
             //AudioManager.Instance.FX.StartPumpingBloom();
-            effects.addBloom(1f);
+            effects.addBloom(bloomAmt);
 			Destroy(coll.gameObject);
+
+            if (foodCounter >= 10) {
+                GameMaster.me.tryToSpawnFriend();
+            }
 		}
 
         if (coll.gameObject.layer == LayerMask.NameToLayer("FoodRange")) {

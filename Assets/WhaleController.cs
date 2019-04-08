@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WhaleController : MonoBehaviour
 {
-    Vector2 pos;
+    public Vector2 pos;
     FollowMouse_3D player;
     public float dis;
     public float spd;
@@ -12,6 +12,7 @@ public class WhaleController : MonoBehaviour
     public bool inRange;
     public Vector2 dir;
     KoiFriendSynth synth;
+    int timer;
 
     // Start is called before the first frame update
     void Start()
@@ -19,7 +20,7 @@ public class WhaleController : MonoBehaviour
         player = GameMaster.me.player;
         pos = new Vector2(transform.position.x, transform.position.z);
         synth = GameMaster.me.whaleSynth.gameObject.GetComponent<KoiFriendSynth>();
-        dir = player.pos - pos;
+        dir = (player.pos - pos).normalized;
     }
 
     // Update is called once per frame
@@ -27,11 +28,26 @@ public class WhaleController : MonoBehaviour
     {
         pos = new Vector2(transform.position.x, transform.position.z);
         dis = Vector2.Distance(player.pos, pos);
-        transform.position = new Vector3(pos.x+dir.x*spd, pos.y+dir.y*spd);
+        transform.position = new Vector3(pos.x+dir.x*spd, 0.5f, pos.y+dir.y*spd);
 
         if (dis < range && !inRange) {
+//            Debug.Log("Played Whale Note");
             inRange=true;
-            synth.playNote(4);
+            synth.playNote(8);
         }
+
+        if (dis < range && inRange) {
+            timer++;
+        }
+
+        if (timer > 360) {
+            inRange=false;
+            timer=0;
+        }
+
+        if (dis > 30) {
+            Destroy(this.gameObject);
+        }
+
     }
 }

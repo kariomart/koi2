@@ -59,6 +59,7 @@ public class AudioManager : MonoBehaviour {
 	public EffectController FX;
 	public TextMesh debug;
 	public List<AudioSource> activeSFX = new List<AudioSource>();
+
 	
 
 	public static AudioManager Instance {
@@ -368,7 +369,7 @@ public class AudioManager : MonoBehaviour {
 
 		float dis = Vector3.Distance(player.transform.position, o.position);
 		if (o.position.x < player.transform.position.x) {dis *= -1;}
-		float pan = RemapFloat(dis, -10, 10, -.8f, .8f);
+		float pan = RemapFloat(dis, -10, 10, -.5f, .5f);
 
 		return pan;
 	}

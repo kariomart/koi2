@@ -13,6 +13,7 @@ public class GameMaster : MonoBehaviour {
 
 	public int rainChance;
 	public int rainStopChance;
+	public int whaleSpawnChance;
 	public bool raining;
 
 	public GameObject rainRipple;
@@ -23,6 +24,14 @@ public class GameMaster : MonoBehaviour {
 	public HelmController koiFriendSynth;
 	public HelmController whaleSynth;
 
+	public GameObject koiFriendPrefab;
+	public GameObject whalePrefab;
+
+	public HelmSequencer sequencer;
+	public HelmSequencer whaleSequencer;
+	public int sequencerNote;
+	public int whaleSeqNote;
+
 
 
 	// Use this for initialization
@@ -31,7 +40,7 @@ public class GameMaster : MonoBehaviour {
 		me = this;
 		GameObject g = GameObject.Find("GameStates");
 		gameStates = new GameState[g.transform.childCount];
-
+		//spawnFriend();
 		for (int i = 0; i < gameStates.Length; i ++) {
 			gameStates[i] = g.transform.GetChild(i).GetComponent<GameState>();
 		} 
@@ -47,7 +56,14 @@ public class GameMaster : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.Q)) {
 			player.enabled=!player.enabled;
 		}
+
+		if (Input.GetKeyDown(KeyCode.W)) {
+			sequencer.enabled=!sequencer.enabled;
+			whaleSequencer.enabled=!whaleSequencer.enabled;
+		}
+
 		int rand = Random.Range(0, sfxChance);
+		
 		if (rand == 10) {
 			rand = Random.Range(0, 101);
 			if (rand > 50) {
@@ -62,6 +78,12 @@ public class GameMaster : MonoBehaviour {
 			AudioManager.Instance.playRain();
 			//AudioManager.Instance.scaleNum = 2;
 			raining = true;
+		}
+
+		rand = Random.Range(0, whaleSpawnChance);
+
+		if (rand==1) {
+			spawnWhale();
 		}
 
 
@@ -91,29 +113,45 @@ public class GameMaster : MonoBehaviour {
 		
 	}
 
-	// public void playFriendNotes() {
-
-	// 	foreach (KoiFriend k in player.friends)
-	// 	{
-	// 		//Debug.Log("played note");
-	// 		k.playNote();
-	// 	}
-	// }
-
 	public IEnumerator playFriendNotes() {
 
 		float t = .25f * Random.Range(0,4);
 		yield return new WaitForSeconds(t);
 
-		if (player.friends.Count > 0) {
-			foreach (KoiFriend k in player.friends)
-			{
-				//Debug.Log("played note");
-				k.playNote();
-				player.effects.addBloom(.3f);
-				yield return new WaitForSeconds(t);
-			}
+		foreach (KoiFriend k in player.friends)
+		{
+			//Debug.Log("played note");
+			k.playNote();
+			player.effects.addBloom(.3f);
+			yield return new WaitForSeconds(t);
 		}
+		//GameMaster.me.sequencerNote++;
+	}
+
+	public void tryToSpawnFriend() {
+
+		int rand = Random.Range(0,5);
+
+		if (rand == 1) {
+			spawnFriend();
+		}
+	}
+
+	public void spawnFriend() {
+		GameObject k = Instantiate(koiFriendPrefab, new Vector3(player.pos.x+Random.Range(-20,20), 0.5f, player.pos.y+Random.Range(-20,20)), Quaternion.identity);
+		KoiFriend kc = k.GetComponent<KoiFriend>();
+		kc.range+=Random.Range(-1,1);
+		kc.maxSpeed+=Random.Range(-.05f,.1f);
+		player.friends.Add(kc);
+		Debug.Log("friend spawned !");
+		player.foodCounter=0;
+	}
+
+	public void spawnWhale() {
+
+		Instantiate(whalePrefab, new Vector3(player.pos.x+Random.Range(-40,40), 0.5f, player.pos.y+Random.Range(-40,40)), Quaternion.identity);
+		//Instantiate(whalePrefab, new Vector3(20,0.5f,-20), Quaternion.identity);
+
 	}
 
 }

@@ -7,6 +7,7 @@ public class KoiFriend : MonoBehaviour
 
     FollowMouse_3D player;
     ParticleSystem particles;
+    AudioSource synthAudio;
     public float dis;
     public float range;
     public Vector2 pos;
@@ -24,6 +25,7 @@ public class KoiFriend : MonoBehaviour
     {
         player = GameMaster.me.player;
         sfx = GameMaster.me.koiFriendSynth.gameObject.GetComponent<KoiFriendSynth>();
+        synthAudio = sfx.gameObject.GetComponent<AudioSource>();
         particles = GetComponent<ParticleSystem>();
     }
 
@@ -57,13 +59,8 @@ public class KoiFriend : MonoBehaviour
     }
 
     public void playNote() {
+        synthAudio.panStereo = AudioManager.Instance.getPan(transform);
         sfx.playNote();
-        addSize();
-    }
-
-
-    public void playNote(float length) {
-        sfx.playNote(length);
         addSize();
     }
 
