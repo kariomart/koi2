@@ -5,6 +5,13 @@ using UnityEngine;
 public class FollowMouse_3D : MonoBehaviour {
 
     public float moveSpeed = 0.004f;
+    public float xSpeed;
+    public float ySpeed;
+    public float speed;
+    public float accel = 0.0001f;
+    public float deaccel = 0.0001f;
+    public float maxSpeed = 0.001f;
+
     public Vector2 pos;
     Camera cam;
     Transform reticle;
@@ -42,12 +49,15 @@ public class FollowMouse_3D : MonoBehaviour {
     public int foodCounter;
     public int friendCounter = 16;
 
+    Rigidbody rb;
+    Vector3 mouseDir;
 
     // Use this for initialization
     void Start () {
         
         reticle = GameObject.Find("reticle").transform;
         sphere = GetComponent<SphereCollider>();
+        rb=GetComponent<Rigidbody>();
         Cursor.visible = false;
         cam = Camera.main;
         waterSfx = GetComponent<AudioSource>();
@@ -69,18 +79,34 @@ public class FollowMouse_3D : MonoBehaviour {
             checkFood();
         }
 
+        Vector3 oldMouseDir = mouseDir;
 
-        AudioManager.Instance.updateDebug();
-        Vector3 mouseDir = (cam.ScreenToWorldPoint(Input.mousePosition) - transform.position);
-		mouseDir.y = 0.51f;
+        mouseDir = (cam.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized;
+    
+        //Vector3 adjustedMouseDir = Vector3.Lerp(oldMouseDir, mouseDir, 1-(speed/maxSpeed));
+
+        mouseDir.y=.51f;
+        speed+=accel;
+
+        if (Input.GetMouseButton(0)) {
+            //acceleration();
+            //speed+=accel;
+        } else {
+            //deacceleration();
+            //speed-=deaccel;
+        }
+
+        speed = Mathf.Clamp(speed, 0, maxSpeed);
+
         //reticle.position = Vector2.Lerp(transform.position, cam.ScreenToWorldPoint(Input.mousePosition), moveSpeed) + mouseDir * 2;
         //transform.position = Vector3.Lerp(transform.position, mouseDir, moveSpeed);
 		transform.position = transform.position + mouseDir * moveSpeed;
+        //rb.MovePosition(transform.position+mouseDir*speed);
         transform.position = new Vector3(transform.position.x, .51f, transform.position.z);
         //water.transform.position = transform.position;
         //waterShader.SetVector("_Offset", new Vector4(transform.position.x, transform.position.z, 0, 0));
 
-
+        AudioManager.Instance.updateDebug();
         //float rotation_z = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
         //transform.rotation = Quaternion.Euler(0f, 0f, rotation_z - 90f);
 
@@ -168,6 +194,35 @@ public class FollowMouse_3D : MonoBehaviour {
        //Debug.Log(depthPercentage);
     }
 
+    void acceleration() {
+
+        xSpeed+= -accel*Mathf.Sign(transform.position.x-mouseDir.x);
+        ySpeed+= -accel*Mathf.Sign(transform.position.y-mouseDir.y);
+
+        xSpeed = Mathf.Clamp(xSpeed, -maxSpeed, maxSpeed);
+        ySpeed = Mathf.Clamp(ySpeed, -maxSpeed, maxSpeed);
+
+    }
+
+    void deacceleration() {
+
+        if (xSpeed > 0) {
+            xSpeed -=deaccel;
+        } else {
+            xSpeed +=deaccel;
+        }
+
+        if (ySpeed > 0) {
+            ySpeed -=deaccel;
+        } else {
+            ySpeed +=deaccel;
+        }
+
+        xSpeed = Mathf.Clamp(xSpeed, -maxSpeed, maxSpeed);
+        ySpeed = Mathf.Clamp(ySpeed, -maxSpeed, maxSpeed);
+
+    }
+
     void checkPosition() {
 
         if (Mathf.Abs(transform.position.x) > MapGenerator.me.tileSize * MapGenerator.me.xTiles / 2) {
@@ -199,7 +254,13 @@ public class FollowMouse_3D : MonoBehaviour {
             AudioManager.Instance.PlayFoodSound();
             foodCounter++;
             if (friends.Count > 0) {
-                GameMaster.me.StartCoroutine("playFriendNotes");
+                if (coll.gameObject.tag == "Chord") {
+                    Debug.Log("Playing Chord");
+                    GameMaster.me.StartCoroutine("playFriendChord");
+                } else {
+                    Debug.Log("Playing Note");
+                    GameMaster.me.StartCoroutine("playFriendNotes");
+                }
             }
             //AudioManager.Instance.FX.StartPumpingBloom();
             effects.addBloom(bloomAmt);

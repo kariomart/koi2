@@ -82,7 +82,7 @@ Category {
                 #endif
 
                 half4 col = i.color * tex2D(_MainTex, i.texcoord);
-                col.a = tex2D(_MainTex, i.texcoord).a;
+                //col.a = tex2D(_MainTex, i.texcoord).a;
 
                 
                 //col.rgb *= col.a;

@@ -294,7 +294,7 @@ public class AudioManager : MonoBehaviour {
 	
 	public void updateFX() {
 
-		FX.setVignette(player.depthPercentage);
+		FX.addVingette(player.depthPercentage);
 		FX.setBloom(player.depthPercentage);
 
 	}

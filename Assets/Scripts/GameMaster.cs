@@ -13,9 +13,13 @@ public class GameMaster : MonoBehaviour {
 	public EffectController effects;
 
 	public int rainChance;
+	public int lightningChance;
 	public int rainStopChance;
-	public int whaleSpawnChance;
 	public bool raining;
+	public bool lightningStorm;
+	public bool striking;
+
+	public int whaleSpawnChance;
 
 	public GameObject rainRipple;
 	public RainSynth rainSynthController;
@@ -23,6 +27,8 @@ public class GameMaster : MonoBehaviour {
 
 	public HelmController rainSynth;
 	public AudioSource rainSource;
+	public AudioSource lightningSource;
+	public HelmController lightningSynth;
 	public HelmController koiFriendSynth;
 	public HelmController[] friendSynths;
 	public HelmController whaleSynth;
@@ -40,14 +46,29 @@ public class GameMaster : MonoBehaviour {
 	
 	public bool gameover;
 
+	public float time;
+	public float dayLength = 200f;
+	public bool isDay = true;
+	public bool cycling;
+
+	public int waterSize;
+	public Transform waterObj;
+	public Material waterMat;
+
+	int[] scale = { 0, 2, 4, 7, 9 };
+
 	// Use this for initialization
 	void Start () {
 
 		me = this;
+		waterMat = waterObj.gameObject.GetComponent<Renderer>().material;
+		waterObj.localScale = new Vector3(waterSize,waterSize,waterSize);
+		waterMat.mainTextureScale = new Vector2(waterSize, waterSize);
 		GameObject g = GameObject.Find("GameStates");
 		gameStates = new GameState[g.transform.childCount];
 		loadSynths();
 		rainSource = rainSynth.gameObject.GetComponent<AudioSource>();
+		lightningSource = lightningSynth.gameObject.GetComponent<AudioSource>();
 		//spawnFriend();
 		for (int i = 0; i < gameStates.Length; i ++) {
 			gameStates[i] = g.transform.GetChild(i).GetComponent<GameState>();
@@ -99,6 +120,10 @@ public class GameMaster : MonoBehaviour {
 			AudioManager.Instance.playRain();
 			//AudioManager.Instance.scaleNum = 2;
 			raining = true;
+			rand = Random.Range(0, 4);
+			if (rand == 1) {
+				lightningStorm=true;
+			}
 		}
 
 		rand = Random.Range(0, whaleSpawnChance);
@@ -113,10 +138,13 @@ public class GameMaster : MonoBehaviour {
 			AudioManager.Instance.openSequencerFilter();
 		}
 
+		DayNightCycle();
+
 
 		if (raining) {
 
 			rand = Random.Range(0, dropChance);
+			int lRand = Random.Range(0, lightningChance);
 			if (rand == 0) {
 				//Instantiate(rainRipple, player.transform.position, Quaternion.identity);
 				GameObject r = Instantiate(rainRipple, new Vector3(player.transform.position.x-7+Random.Range(0f,14f),player.transform.position.y-4+Random.Range(0f,8), player.transform.position.z), Quaternion.identity);
@@ -128,16 +156,47 @@ public class GameMaster : MonoBehaviour {
 				}
 			}
 
+			if (lRand == 1 && !striking && lightningStorm) {
+				int note = 12 + scale[Random.Range(0,scale.Length)] + (12*Random.Range(0, 1));
+				lightningSource.panStereo = Random.Range(-0.8f,0.8f);
+				lightningSynth.NoteOn(note, Random.Range(.2f,1), Random.Range(1,2));
+				effects.StartCoroutine(effects.PumpCA());
+				striking = true;
+			}
+
 
 			rand = Random.Range(0, rainStopChance);
 			if (rand == 1 && dropChance<10) {
 				raining = false;
+				lightningStorm = false;
 				AudioManager.Instance.StartCoroutine("FadeOutRain");
 				AudioManager.Instance.scaleNum = 0;
 			}
 		
 		}	
 		
+	}
+
+	public void DayNightCycle() {
+
+		time++;
+
+
+		if (time > dayLength && isDay && !cycling) {
+			effects.StartCoroutine(effects.NightTime());
+			Debug.Log("going to night");
+			cycling = true;
+		}	
+		
+		if (time > dayLength & !isDay && !cycling) {
+			effects.StartCoroutine(effects.DayTime());
+			Debug.Log("going to day");
+			cycling = true;
+		}	
+
+
+		//effects.setHue(time/dayLength);
+
 	}
 
 	public void loadSynths() {
@@ -165,7 +224,7 @@ public class GameMaster : MonoBehaviour {
 
 	public IEnumerator playFriendNotes() {
 
-		float t = .25f * Random.Range(0,2);
+		float t = .5f * Random.Range(0,2);
 		yield return new WaitForSeconds(t);
 		List<KoiFriend> tempKoi = new List<KoiFriend>();
 		tempKoi = player.friends;
@@ -176,6 +235,22 @@ public class GameMaster : MonoBehaviour {
 			k.playSound();
 			player.effects.addBloom(.15f);
 			yield return new WaitForSeconds(t);
+		}
+		//GameMaster.me.sequencerNote++;
+	}
+
+	public IEnumerator playFriendChord() {
+
+		float t = 1f;
+		yield return new WaitForSeconds(t);
+		List<KoiFriend> tempKoi = new List<KoiFriend>();
+		tempKoi = player.friends;
+		
+		foreach (KoiFriend k in tempKoi)
+		{
+			k.playChordNote();
+			player.effects.addBloom(.15f);
+			k.StartCoroutine(k.chordSize());
 		}
 		//GameMaster.me.sequencerNote++;
 	}

@@ -8,6 +8,7 @@
 		_Glossiness ("Smoothness", Range(0,1)) = 0.5
 		_Metallic ("Metallic", Range(0,1)) = 0.0
 		_Offset("Offset", Vector) = (0,0,0,0)
+		_KoiPos("KoiPos", Float) = 0
 	}
 	SubShader {
 		Tags { "RenderType"="Opaque" }
@@ -35,6 +36,7 @@
 		fixed4 _FoamColor; // the color of the foam
 		float4 _Scrolling; // X and Y scrolling speed for the water texture, Z and W is scrolling speed for the second water texture
 		float4 _Offset;
+		float _KoiPos;
 
 		struct Input {
 			float2 uv_MainTex; // needed for the water texture coords

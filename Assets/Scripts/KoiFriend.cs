@@ -18,32 +18,33 @@ public class KoiFriend : MonoBehaviour
     public float maxSpeed;
 
     public KoiFriendSynth sfx;
+    public KoiFriendSynth chordSynth;
 
-    public bool chordFish;
-    public bool arpFish;
-    public bool noteFish;
+    public bool chording;
+
 
 
     // Start is called before the first frame update
     void Start()
     {
         player = GameMaster.me.player;
-        sfx = GameMaster.me.friendSynths[Random.Range(0, GameMaster.me.friendSynths.Length)].gameObject.GetComponent<KoiFriendSynth>();
+        //sfx = GameMaster.me.friendSynths[Random.Range(0, GameMaster.me.friendSynths.Length)].gameObject.GetComponent<KoiFriendSynth>();
+        sfx = GameMaster.me.friendSynths[0].gameObject.GetComponent<KoiFriendSynth>();
+        chordSynth = GameMaster.me.friendSynths[1].gameObject.GetComponent<KoiFriendSynth>();
         synthAudio = sfx.gameObject.GetComponent<AudioSource>();
         particles = GetComponent<ParticleSystem>();
 
-        if (Random.Range(0, 100) > 50 ) {
-            noteFish = true;
-        } else {
-            chordFish = true;
-        }
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
         var main = particles.main;
-        main.startSize=.3f;
+        if (chording) {
+            main.startSize=Random.Range(.6f,1.2f);
+        } else {
+            main.startSize=.3f;
+        }
 
         if (Random.value > .6f) {
             speed+=accel;
@@ -70,21 +71,29 @@ public class KoiFriend : MonoBehaviour
 
     public void playSound() {
         Debug.Log(name, synthAudio);
-        synthAudio.panStereo = AudioManager.Instance.getPan(transform);
-
-        if (noteFish) {
-            sfx.playNote();
-        }
-        if (chordFish) {
-            sfx.playChord();
-        }
+        synthAudio.panStereo = AudioManager.Instance.getPan(transform);     
+        sfx.playNote();
         
         addSize();
+    }
+
+    public void playChordNote() {
+
+        chordSynth.playNote(2,-12);
+
     }
 
     public void addSize() {
         var main = particles.main;
         main.startSize=1;
+    }
+
+    public IEnumerator chordSize() {
+
+        chording=true;
+        yield return new WaitForSeconds(2.5f);
+        chording = false;
+
     }
 }
 
