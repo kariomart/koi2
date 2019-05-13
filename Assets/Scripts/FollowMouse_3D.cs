@@ -55,7 +55,7 @@ public class FollowMouse_3D : MonoBehaviour {
         depthPercentage = 1;
         FX = GetComponent<ParticleSystem>();
         waterShader = water.GetComponent<Renderer>().material;
-        
+
     }
   
   // Update is called once per frame

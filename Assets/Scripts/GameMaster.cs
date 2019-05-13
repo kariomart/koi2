@@ -22,7 +22,9 @@ public class GameMaster : MonoBehaviour {
 	int dropChance = 150;
 
 	public HelmController rainSynth;
+	public AudioSource rainSource;
 	public HelmController koiFriendSynth;
+	public HelmController[] friendSynths;
 	public HelmController whaleSynth;
 
 	public GameObject koiFriendPrefab;
@@ -44,10 +46,20 @@ public class GameMaster : MonoBehaviour {
 		me = this;
 		GameObject g = GameObject.Find("GameStates");
 		gameStates = new GameState[g.transform.childCount];
+		loadSynths();
+		rainSource = rainSynth.gameObject.GetComponent<AudioSource>();
 		//spawnFriend();
 		for (int i = 0; i < gameStates.Length; i ++) {
 			gameStates[i] = g.transform.GetChild(i).GetComponent<GameState>();
 		} 
+
+
+		foreach (Transform c in GameObject.Find("Friends").transform)
+		{
+			if (c.gameObject.activeInHierarchy) {
+				player.friends.Add(c.GetComponent<KoiFriend>());
+			}
+		}
 	}
 	
 	// Update is called once per frame
@@ -109,6 +121,7 @@ public class GameMaster : MonoBehaviour {
 				//Instantiate(rainRipple, player.transform.position, Quaternion.identity);
 				GameObject r = Instantiate(rainRipple, new Vector3(player.transform.position.x-7+Random.Range(0f,14f),player.transform.position.y-4+Random.Range(0f,8), player.transform.position.z), Quaternion.identity);
 				r.transform.SetParent(rainSynthController.transform);
+				rainSource.panStereo = AudioManager.Instance.getPan(r.transform);
 				rainSynthController.playNote();
 				if (dropChance > 6) {
 					dropChance -= 5;
@@ -125,6 +138,21 @@ public class GameMaster : MonoBehaviour {
 		
 		}	
 		
+	}
+
+	public void loadSynths() {
+
+		GameObject[] synths = GameObject.FindGameObjectsWithTag("FriendSynth");
+		int c = 0;
+		friendSynths = new HelmController[synths.Length];
+
+		foreach (GameObject s in synths)
+		{
+			friendSynths[c] = s.GetComponent<HelmController>();
+			c++;
+		}
+
+
 	}
 	public void enableSequencers() {
 
@@ -145,7 +173,7 @@ public class GameMaster : MonoBehaviour {
 		foreach (KoiFriend k in tempKoi)
 		{
 			//Debug.Log("played note");
-			k.playNote();
+			k.playSound();
 			player.effects.addBloom(.15f);
 			yield return new WaitForSeconds(t);
 		}

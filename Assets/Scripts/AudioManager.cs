@@ -282,6 +282,7 @@ public class AudioManager : MonoBehaviour {
 		if (vol < 0) {
 			sequencers.SetFloat("Volume", vol+=0.05f);
 		}
+ 
 
 		sequencers.SetFloat("lowPassFreq", lowPassVal+=3f);
 
@@ -384,7 +385,6 @@ public class AudioManager : MonoBehaviour {
 		float dis = Vector3.Distance(Camera.main.transform.position, player.transform.position);
 		if (player.transform.position.x < Camera.main.transform.position.x) {dis *= -1;}
 		float pan = Mathf.Clamp(dis /= 5f, -1, 1);
-
 		return pan;
 	}
 

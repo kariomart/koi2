@@ -33,6 +33,7 @@ public class KoiFriendSynth : MonoBehaviour
         float strength = Random.Range(.2f, 1.0f);
         float length = Random.Range(.1f, .3f);
         synth.NoteOn(note, strength, length);
+
         if (sNote < 128) {
             GameMaster.me.sequencer.AddNote(note-12, sNote, sNote+1, Mathf.Clamp(strength,.2f,.5f));
             GameMaster.me.sequencerNote++;
@@ -70,5 +71,19 @@ public class KoiFriendSynth : MonoBehaviour
             GameMaster.me.whaleSequencer.AddNote(note, sNote, sNote+4, Random.Range(.2f,.4f));
         }
         GameMaster.me.whaleSeqNote++;
+    }
+
+    public void playChord(float length=2, int offset=0) {
+
+        int rootNote;
+        int min = minNote-offset;
+        rootNote = min + scale[Random.Range(0,scale.Length)] + (12*Random.Range(0, octaveSpan));
+        float strength = Random.Range(.2f, 1.0f);
+        int note1 = minNote+2;
+        int note2 = minNote+4;
+
+        synth.NoteOn(rootNote, strength, length);
+        synth.NoteOn(note1, strength, length);
+        synth.NoteOn(note2, strength, length);
     }
 }

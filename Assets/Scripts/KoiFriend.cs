@@ -17,16 +17,26 @@ public class KoiFriend : MonoBehaviour
     public float accel;
     public float maxSpeed;
 
-    KoiFriendSynth sfx;
+    public KoiFriendSynth sfx;
+
+    public bool chordFish;
+    public bool arpFish;
+    public bool noteFish;
 
 
     // Start is called before the first frame update
     void Start()
     {
         player = GameMaster.me.player;
-        sfx = GameMaster.me.koiFriendSynth.gameObject.GetComponent<KoiFriendSynth>();
+        sfx = GameMaster.me.friendSynths[Random.Range(0, GameMaster.me.friendSynths.Length)].gameObject.GetComponent<KoiFriendSynth>();
         synthAudio = sfx.gameObject.GetComponent<AudioSource>();
         particles = GetComponent<ParticleSystem>();
+
+        if (Random.Range(0, 100) > 50 ) {
+            noteFish = true;
+        } else {
+            chordFish = true;
+        }
     }
 
     // Update is called once per frame
@@ -58,9 +68,17 @@ public class KoiFriend : MonoBehaviour
         //transform.position = new Vector3(transform.position.x, .51f, transform.position.z);
     }
 
-    public void playNote() {
+    public void playSound() {
+        Debug.Log(name, synthAudio);
         synthAudio.panStereo = AudioManager.Instance.getPan(transform);
-        sfx.playNote();
+
+        if (noteFish) {
+            sfx.playNote();
+        }
+        if (chordFish) {
+            sfx.playChord();
+        }
+        
         addSize();
     }
 
