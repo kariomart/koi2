@@ -60,6 +60,8 @@ public class FollowMouse_3D : MonoBehaviour {
     bool listeningForDoubleTap = false;
     int doubleTapTimer;
 
+    public int ambientTimer = 0;
+
     // Use this for initialization
     void Start () {
         
@@ -80,26 +82,18 @@ public class FollowMouse_3D : MonoBehaviour {
   void FixedUpdate () {
 
 
-        if (Input.GetMouseButtonDown(0) && listeningForDoubleTap && doubleTapTimer < 5) {
+       //ToggleAmbient();
+        ambientTimer ++;
+
+        if (ambientTimer > 1000) {
             GameMaster.me.ambientMode = !GameMaster.me.ambientMode;
-            doubleTapTimer=0;
-            listeningForDoubleTap=false;
         }
 
-        if (Input.GetMouseButtonDown(0)) {
-            listeningForDoubleTap = true;
-        }
+        if (Input.GetMouseButton(0)) {
+            ambientTimer=0;
+            GameMaster.me.ambientMode = false;
+        }        
 
-        if (listeningForDoubleTap) {
-            doubleTapTimer++;
-            if (doubleTapTimer>5) {
-                listeningForDoubleTap=false;
-                doubleTapTimer=0;
-            }
-        }
-
-
-        
         pos = new Vector2(transform.position.x, transform.position.z);
         //checkPosition();
         waterSounds();
@@ -119,14 +113,11 @@ public class FollowMouse_3D : MonoBehaviour {
         //Vector3 adjustedMouseDir = Vector3.Lerp(oldMouseDir, mouseDir, 1-(speed/maxSpeed));
 
         mouseDir.y=.51f;
-        speed+=accel;
 
         if (Input.GetMouseButton(0)) {
-            //acceleration();
-            //speed+=accel;
+            speed+=accel;
         } else {
-            //deacceleration();
-            //speed-=deaccel;
+            speed-=accel;
         }
 
         speed = Mathf.Clamp(speed, 0, maxSpeed);
@@ -135,17 +126,16 @@ public class FollowMouse_3D : MonoBehaviour {
         //transform.position = Vector3.Lerp(transform.position, mouseDir, moveSpeed);
         if (!GameMaster.me.ambientMode) {
             dir = mouseDir;
-            moveSpeed=.2f;
         } else {
             if (randomFood) {
                 dir = (randomFood.transform.position - transform.position).normalized;
-                moveSpeed=.05f*(.1f+Mathf.Abs(Mathf.Sin(Time.time+Random.Range(0f,.5f))));
+                speed=.05f*(.1f+Mathf.Abs(Mathf.Sin(Time.time+Random.Range(0f,.5f))));
             } else {
                 getClosestFood();
             }
         }
 
-        transform.position = transform.position + dir * moveSpeed;
+        transform.position = transform.position + dir * speed;
         transform.position = new Vector3(transform.position.x, .51f, transform.position.z);
         //rb.MovePosition(transform.position+mouseDir*speed);
         //water.transform.position = transform.position;
@@ -389,6 +379,27 @@ public class FollowMouse_3D : MonoBehaviour {
         //Vector2 koiPos = new Vector2(transform.position.x, transform.position.z); 
         line.SetPosition(0, transform.position);
         line.SetPosition(1, closestFood.transform.position);
+    }
+
+    void ToggleAmbient() {
+
+         if (Input.GetMouseButtonDown(0) && listeningForDoubleTap && doubleTapTimer < 5) {
+            GameMaster.me.ambientMode = !GameMaster.me.ambientMode;
+            doubleTapTimer=0;
+            listeningForDoubleTap=false;
+        }
+
+        if (Input.GetMouseButtonDown(0)) {
+            listeningForDoubleTap = true;
+        }
+
+        if (listeningForDoubleTap) {
+            doubleTapTimer++;
+            if (doubleTapTimer>5) {
+                listeningForDoubleTap=false;
+                doubleTapTimer=0;
+            }
+        }
     }
 
 }

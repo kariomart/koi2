@@ -201,13 +201,13 @@ public class GameMaster : MonoBehaviour {
 
 		if (time > dayLength && isDay && !cycling) {
 			effects.StartCoroutine(effects.NightTime());
-			Debug.Log("going to night");
+//			Debug.Log("going to night");
 			cycling = true;
 		}	
 		
 		if (time > dayLength & !isDay && !cycling) {
 			effects.StartCoroutine(effects.DayTime());
-			Debug.Log("going to day");
+			//Debug.Log("going to day");
 			cycling = true;
 		}	
 
