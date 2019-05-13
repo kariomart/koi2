@@ -5,6 +5,8 @@ using AudioHelm;
 
 public class GameMaster : MonoBehaviour {
 
+	public bool ambientMode; 
+
 	public static GameMaster me;
 	public FollowMouse_3D player;
 	public GameState[] gameStates;
@@ -14,6 +16,7 @@ public class GameMaster : MonoBehaviour {
 
 	public int rainChance;
 	public int lightningChance;
+	public int defaultRainStopChance;
 	public int rainStopChance;
 	public bool raining;
 	public bool lightningStorm;
@@ -54,6 +57,9 @@ public class GameMaster : MonoBehaviour {
 	public int waterSize;
 	public Transform waterObj;
 	public Material waterMat;
+	public Canvas canvas;
+	public GameObject bg;
+	public GameObject title;
 
 	int[] scale = { 0, 2, 4, 7, 9 };
 
@@ -61,6 +67,7 @@ public class GameMaster : MonoBehaviour {
 	void Start () {
 
 		me = this;
+		defaultRainStopChance = rainStopChance;
 		waterMat = waterObj.gameObject.GetComponent<Renderer>().material;
 		waterObj.localScale = new Vector3(waterSize,waterSize,waterSize);
 		waterMat.mainTextureScale = new Vector2(waterSize, waterSize);
@@ -85,6 +92,7 @@ public class GameMaster : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
+
 
 		if (!gameover) {
 			AudioManager.Instance.updateFilters();
@@ -120,6 +128,7 @@ public class GameMaster : MonoBehaviour {
 			AudioManager.Instance.playRain();
 			//AudioManager.Instance.scaleNum = 2;
 			raining = true;
+			rainStopChance=defaultRainStopChance;
 			rand = Random.Range(0, 4);
 			if (rand == 1) {
 				lightningStorm=true;
@@ -136,6 +145,10 @@ public class GameMaster : MonoBehaviour {
 			effects.addBloom(.005f);
 			effects.addExposure(.005f);
 			AudioManager.Instance.openSequencerFilter();
+		}
+
+		if (player.friends.Count >= 5) {
+			// /RandomFriendSoundChance();
 		}
 
 		DayNightCycle();
@@ -171,6 +184,10 @@ public class GameMaster : MonoBehaviour {
 				lightningStorm = false;
 				AudioManager.Instance.StartCoroutine("FadeOutRain");
 				AudioManager.Instance.scaleNum = 0;
+			}
+
+			if (dropChance < 10) {
+				rainStopChance--;
 			}
 		
 		}	
@@ -222,9 +239,29 @@ public class GameMaster : MonoBehaviour {
 
 	}
 
+	void RandomFriendSoundChance() {
+
+		List<KoiFriend> tempKoi = new List<KoiFriend>();
+		tempKoi = player.friends;
+
+		foreach (KoiFriend k in tempKoi)
+		{
+			int rand = Random.Range(0, 500);
+			if (rand == 1) {
+				k.playFriendSound();
+				k.StartCoroutine(k.chordSize(1.5f));
+			}else if (rand == 2) {
+				//k.playChordNote();
+			}
+		}
+
+
+
+	}
+
 	public IEnumerator playFriendNotes() {
 
-		float t = .5f * Random.Range(0,2);
+		float t = .25f * Random.Range(1,3);
 		yield return new WaitForSeconds(t);
 		List<KoiFriend> tempKoi = new List<KoiFriend>();
 		tempKoi = player.friends;
@@ -250,9 +287,17 @@ public class GameMaster : MonoBehaviour {
 		{
 			k.playChordNote();
 			player.effects.addBloom(.15f);
-			k.StartCoroutine(k.chordSize());
+			k.StartCoroutine(k.chordSize(2f));
 		}
 		//GameMaster.me.sequencerNote++;
+	}
+
+	public void gameIsOver() {
+
+		canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+		bg.SetActive(true);
+		title.SetActive(true);
+
 	}
 
 	public void tryToSpawnFriend() {

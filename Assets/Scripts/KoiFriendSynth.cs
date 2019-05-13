@@ -41,6 +41,7 @@ public class KoiFriendSynth : MonoBehaviour
             if (!GameMaster.me.gameover) {
                 GameMaster.me.gameover=true;
                 GameMaster.me.player.sphere.enabled = false;
+                //GameMaster.me.gameIsOver();
                 GameMaster.me.enableSequencers();
                 AudioManager.Instance.sequencers.SetFloat("lowPassFreq", 0);
                 AudioManager.Instance.sequencers.SetFloat("Volume",-40);

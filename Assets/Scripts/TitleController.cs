@@ -9,6 +9,7 @@ public class TitleController : MonoBehaviour {
 	bool fading;
 	Text t;
 	public AudioClip a;
+	bool started=false;
 	
 
 	// Use this for initialization
@@ -21,10 +22,11 @@ public class TitleController : MonoBehaviour {
 	void Update () {
 		
 
-		if (Input.GetMouseButtonDown(0)) {
+		if (Input.GetMouseButtonDown(0) && !started) {
 			player.enabled = true;
 			AudioManager.Instance.PlaySFX(a, .1f, 1, AudioManager.Instance.abstractAmbience);
-			Destroy(this.gameObject, 8f);
+			started=true;
+			//Destroy(this.gameObject, 8f);
 			fading = true;
 		}
 

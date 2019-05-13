@@ -19,6 +19,7 @@ public class KoiFriend : MonoBehaviour
 
     public KoiFriendSynth sfx;
     public KoiFriendSynth chordSynth;
+    public KoiFriendSynth friendSynth;
 
     public bool chording;
 
@@ -31,6 +32,7 @@ public class KoiFriend : MonoBehaviour
         //sfx = GameMaster.me.friendSynths[Random.Range(0, GameMaster.me.friendSynths.Length)].gameObject.GetComponent<KoiFriendSynth>();
         sfx = GameMaster.me.friendSynths[0].gameObject.GetComponent<KoiFriendSynth>();
         chordSynth = GameMaster.me.friendSynths[1].gameObject.GetComponent<KoiFriendSynth>();
+        friendSynth = GameMaster.me.friendSynths[2].gameObject.GetComponent<KoiFriendSynth>();
         synthAudio = sfx.gameObject.GetComponent<AudioSource>();
         particles = GetComponent<ParticleSystem>();
 
@@ -79,19 +81,26 @@ public class KoiFriend : MonoBehaviour
 
     public void playChordNote() {
 
-        chordSynth.playNote(2,-12);
+        chordSynth.playNote(2,-17);
 
     }
+
+    public void playFriendSound() {
+
+        friendSynth.playNote(1.5f,-22);
+
+    }
+
 
     public void addSize() {
         var main = particles.main;
         main.startSize=1;
     }
 
-    public IEnumerator chordSize() {
+    public IEnumerator chordSize(float time) {
 
         chording=true;
-        yield return new WaitForSeconds(2.5f);
+        yield return new WaitForSeconds(time);
         chording = false;
 
     }

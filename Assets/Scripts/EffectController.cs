@@ -94,6 +94,12 @@ public class EffectController : MonoBehaviour
         if (bloomLayer.intensity.value < 100) {
             bloomLayer.intensity.value += amt;
         }
+//        Debug.Log(bloomLayer.intensity.value>100f);
+
+        if (bloomLayer.intensity >= 2500) {
+            Debug.Log("wee");
+            GameMaster.me.gameIsOver();
+        }
     }
 
     public void addExposure(float amt) {

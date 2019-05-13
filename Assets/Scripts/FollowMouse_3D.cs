@@ -43,6 +43,7 @@ public class FollowMouse_3D : MonoBehaviour {
     public GameObject water;
     Material waterShader;
     public EffectController effects;
+    public FoodSpawn foodSpawner;
 
     public List<KoiFriend> friends = new List<KoiFriend>();
     float bloomAmt = .25f;
@@ -50,7 +51,14 @@ public class FollowMouse_3D : MonoBehaviour {
     public int friendCounter = 16;
 
     Rigidbody rb;
+    Vector3 dir;
     Vector3 mouseDir;
+    float foodRange = 100f;
+    public bool traveling;
+    public GameObject randomFood;
+
+    bool listeningForDoubleTap = false;
+    int doubleTapTimer;
 
     // Use this for initialization
     void Start () {
@@ -65,12 +73,33 @@ public class FollowMouse_3D : MonoBehaviour {
         depthPercentage = 1;
         FX = GetComponent<ParticleSystem>();
         waterShader = water.GetComponent<Renderer>().material;
-
+        getRandomFood();
     }
   
   // Update is called once per frame
   void FixedUpdate () {
 
+
+        if (Input.GetMouseButtonDown(0) && listeningForDoubleTap && doubleTapTimer < 5) {
+            GameMaster.me.ambientMode = !GameMaster.me.ambientMode;
+            doubleTapTimer=0;
+            listeningForDoubleTap=false;
+        }
+
+        if (Input.GetMouseButtonDown(0)) {
+            listeningForDoubleTap = true;
+        }
+
+        if (listeningForDoubleTap) {
+            doubleTapTimer++;
+            if (doubleTapTimer>5) {
+                listeningForDoubleTap=false;
+                doubleTapTimer=0;
+            }
+        }
+
+
+        
         pos = new Vector2(transform.position.x, transform.position.z);
         //checkPosition();
         waterSounds();
@@ -82,7 +111,11 @@ public class FollowMouse_3D : MonoBehaviour {
         Vector3 oldMouseDir = mouseDir;
 
         mouseDir = (cam.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized;
-    
+
+        if (!randomFood) {
+            //getRandomFood();
+        }
+        
         //Vector3 adjustedMouseDir = Vector3.Lerp(oldMouseDir, mouseDir, 1-(speed/maxSpeed));
 
         mouseDir.y=.51f;
@@ -100,9 +133,21 @@ public class FollowMouse_3D : MonoBehaviour {
 
         //reticle.position = Vector2.Lerp(transform.position, cam.ScreenToWorldPoint(Input.mousePosition), moveSpeed) + mouseDir * 2;
         //transform.position = Vector3.Lerp(transform.position, mouseDir, moveSpeed);
-		transform.position = transform.position + mouseDir * moveSpeed;
-        //rb.MovePosition(transform.position+mouseDir*speed);
+        if (!GameMaster.me.ambientMode) {
+            dir = mouseDir;
+            moveSpeed=.2f;
+        } else {
+            if (randomFood) {
+                dir = (randomFood.transform.position - transform.position).normalized;
+                moveSpeed=.05f*(.1f+Mathf.Abs(Mathf.Sin(Time.time+Random.Range(0f,.5f))));
+            } else {
+                getClosestFood();
+            }
+        }
+
+        transform.position = transform.position + dir * moveSpeed;
         transform.position = new Vector3(transform.position.x, .51f, transform.position.z);
+        //rb.MovePosition(transform.position+mouseDir*speed);
         //water.transform.position = transform.position;
         //waterShader.SetVector("_Offset", new Vector4(transform.position.x, transform.position.z, 0, 0));
 
@@ -251,6 +296,7 @@ public class FollowMouse_3D : MonoBehaviour {
     void OnTriggerEnter(Collider coll) {
 
 		if (coll.gameObject.layer == LayerMask.NameToLayer("Food")) {
+            getClosestFood();
             AudioManager.Instance.PlayFoodSound();
             foodCounter++;
             if (friends.Count > 0) {
@@ -265,6 +311,7 @@ public class FollowMouse_3D : MonoBehaviour {
             //AudioManager.Instance.FX.StartPumpingBloom();
             effects.addBloom(bloomAmt);
 			Destroy(coll.gameObject);
+            foodSpawner.spawnAFood();
 
             if (foodCounter >= friendCounter) {
                 GameMaster.me.tryToSpawnFriend();
@@ -299,7 +346,7 @@ public class FollowMouse_3D : MonoBehaviour {
     }
 
     void checkFood() {
-        float dis = 100f;
+        float dis = 100;
 
         foreach(GameObject food in foods) {
 
@@ -313,6 +360,28 @@ public class FollowMouse_3D : MonoBehaviour {
                 }
             }
         }
+    }
+
+    void getClosestFood() {
+        float dis = foodRange;
+
+         foreach(GameObject food in foods) {
+
+            if (food != null) {
+                Vector2 foodPos = new Vector2(food.transform.position.x, food.transform.position.z);
+                Vector2 koiPos = new Vector2(transform.position.x, transform.position.z); 
+                float newDis = Vector2.Distance(foodPos, koiPos);
+                if (newDis < dis) {
+                    randomFood = food;
+                    dis = newDis;
+                }
+            }
+        }
+
+    }
+
+    void getRandomFood() {
+        randomFood = foodSpawner.foods[Random.Range(0,foods.Count)];
     }
 
     void debugLine() {
