@@ -21,6 +21,8 @@ public class KoiFriend : MonoBehaviour
     public KoiFriendSynth chordSynth;
     public KoiFriendSynth friendSynth;
 
+    public GameObject ripple;
+
     public bool chording;
 
 
@@ -32,7 +34,7 @@ public class KoiFriend : MonoBehaviour
         //sfx = GameMaster.me.friendSynths[Random.Range(0, GameMaster.me.friendSynths.Length)].gameObject.GetComponent<KoiFriendSynth>();
         sfx = GameMaster.me.friendSynths[0].gameObject.GetComponent<KoiFriendSynth>();
         chordSynth = GameMaster.me.friendSynths[1].gameObject.GetComponent<KoiFriendSynth>();
-        friendSynth = GameMaster.me.friendSynths[2].gameObject.GetComponent<KoiFriendSynth>();
+        //friendSynth = GameMaster.me.friendSynths[2].gameObject.GetComponent<KoiFriendSynth>();
         synthAudio = sfx.gameObject.GetComponent<AudioSource>();
         particles = GetComponent<ParticleSystem>();
 
@@ -103,6 +105,10 @@ public class KoiFriend : MonoBehaviour
         yield return new WaitForSeconds(time);
         chording = false;
 
+    }
+
+    public void spawnRipple() {
+        Instantiate(ripple, new Vector3(pos.x, 0.51f, pos.y), Quaternion.identity);
     }
 }
 

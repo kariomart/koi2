@@ -182,6 +182,7 @@ public class GameMaster : MonoBehaviour {
 			if (rand == 1 && dropChance<10) {
 				raining = false;
 				lightningStorm = false;
+				dropChance = 150;
 				AudioManager.Instance.StartCoroutine("FadeOutRain");
 				AudioManager.Instance.scaleNum = 0;
 			}
@@ -270,6 +271,7 @@ public class GameMaster : MonoBehaviour {
 		{
 			//Debug.Log("played note");
 			k.playSound();
+			k.spawnRipple();
 			player.effects.addBloom(.15f);
 			yield return new WaitForSeconds(t);
 		}
@@ -286,6 +288,7 @@ public class GameMaster : MonoBehaviour {
 		foreach (KoiFriend k in tempKoi)
 		{
 			k.playChordNote();
+			k.spawnRipple();
 			player.effects.addBloom(.15f);
 			k.StartCoroutine(k.chordSize(2f));
 		}

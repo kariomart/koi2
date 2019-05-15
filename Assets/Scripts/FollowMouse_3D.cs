@@ -85,8 +85,8 @@ public class FollowMouse_3D : MonoBehaviour {
        //ToggleAmbient();
         ambientTimer ++;
 
-        if (ambientTimer > 1000) {
-            GameMaster.me.ambientMode = !GameMaster.me.ambientMode;
+        if (ambientTimer > 1000 && !GameMaster.me.ambientMode) {
+            GameMaster.me.ambientMode = true;
         }
 
         if (Input.GetMouseButton(0)) {
@@ -97,7 +97,6 @@ public class FollowMouse_3D : MonoBehaviour {
         pos = new Vector2(transform.position.x, transform.position.z);
         //checkPosition();
         waterSounds();
-        //spawnRipple();
         if (foods.Count > 2) {
             checkFood();
         }
@@ -288,6 +287,7 @@ public class FollowMouse_3D : MonoBehaviour {
 		if (coll.gameObject.layer == LayerMask.NameToLayer("Food")) {
             getClosestFood();
             AudioManager.Instance.PlayFoodSound();
+            spawnRipple();
             foodCounter++;
             if (friends.Count > 0) {
                 if (coll.gameObject.tag == "Chord") {
@@ -328,10 +328,7 @@ public class FollowMouse_3D : MonoBehaviour {
 
     void spawnRipple() {
 
-        int rand = Random.Range(0, 100);
-        if (rand == 1) {
-            Instantiate(foodRipple, new Vector2(transform.position.x + Random.Range(-1, 1), transform.position.y + Random.Range(-1, 1)), Quaternion.identity);
-        }
+        Instantiate(foodRipple, new Vector3(pos.x, 0.51f, pos.y), Quaternion.identity);
 
     }
 
