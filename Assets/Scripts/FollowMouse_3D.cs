@@ -62,6 +62,12 @@ public class FollowMouse_3D : MonoBehaviour {
 
     public int ambientTimer = 0;
 
+    public AudioSource ambientDrone1;
+    public AudioSource ambientDrone2;
+    float desiredDroneVolume;
+    public int[] droneStatus = new int[2]{0,0};
+
+
     // Use this for initialization
     void Start () {
         
@@ -81,18 +87,38 @@ public class FollowMouse_3D : MonoBehaviour {
   // Update is called once per frame
   void FixedUpdate () {
 
-
-       //ToggleAmbient();
         ambientTimer ++;
 
         if (ambientTimer > 1000 && !GameMaster.me.ambientMode) {
             GameMaster.me.ambientMode = true;
         }
 
+        if (Input.GetMouseButtonDown(0)) {
+            if (droneStatus[0] == 0) {
+                //ambientDrone1.time = Random.Range(0, ambientDrone1.clip.length);
+                droneStatus[0] = 1;
+                droneStatus[1] = 0;
+            } else {
+                //ambientDrone1.time = Random.Range(0, ambientDrone2.clip.length);
+                droneStatus[1] = 1;
+                droneStatus[0] = 0;
+            }
+        } 
+
+        if (Input.GetMouseButtonUp(0)) {
+            droneStatus[0] = 0;
+            droneStatus[1] = 0;
+        }
+
         if (Input.GetMouseButton(0)) {
             ambientTimer=0;
             GameMaster.me.ambientMode = false;
-        }        
+        }
+
+        ambientDrone();
+
+        //ambientDrone.volume = Mathf.MoveTowards(ambientDrone.volume, desiredDroneVolume, .01f);
+
 
         pos = new Vector2(transform.position.x, transform.position.z);
         //checkPosition();
@@ -112,7 +138,6 @@ public class FollowMouse_3D : MonoBehaviour {
         //Vector3 adjustedMouseDir = Vector3.Lerp(oldMouseDir, mouseDir, 1-(speed/maxSpeed));
 
         mouseDir.y=.51f;
-
         if (Input.GetMouseButton(0)) {
             speed+=accel;
         } else {
@@ -128,7 +153,8 @@ public class FollowMouse_3D : MonoBehaviour {
         } else {
             if (randomFood) {
                 dir = (randomFood.transform.position - transform.position).normalized;
-                speed=.05f*(.1f+Mathf.Abs(Mathf.Sin(Time.time+Random.Range(0f,.5f))));
+                speed=.035f*(.1f+Mathf.Abs(Mathf.Sin(Time.time+Random.Range(0f,.5f))));
+                //speed*= .01f +Vector2.Distance(pos, new Vector2(randomFood.transform.position.x, randomFood.transform.position.z)/10f);
             } else {
                 getClosestFood();
             }
@@ -281,6 +307,38 @@ public class FollowMouse_3D : MonoBehaviour {
         // waterSfx.panStereo = pan;
     }
 
+    void ambientDrone() {
+        float maxVol = .6f;
+        float minVolume = .05f;
+        float rate = .001f;
+
+        if (droneStatus[0] == 1) {
+            if (ambientDrone1.volume < maxVol) {
+                ambientDrone1.volume+=rate;
+            }
+        } else if (droneStatus[0] == 0) {
+            if (ambientDrone1.volume > minVolume) {
+                ambientDrone1.volume-=rate;
+            }
+        }
+
+        if (droneStatus[1] == 1) {
+            if (ambientDrone2.volume < maxVol) {
+                ambientDrone2.volume+=rate;
+            }
+        } else if (droneStatus[1] == 0) {
+            if (ambientDrone2.volume > minVolume) {
+                ambientDrone2.volume-=rate;
+            }
+        }
+
+        float panPosition = pos.x - cam.transform.position.x;
+        panPosition = AudioManager.RemapFloat(panPosition, -3f, 3f, -.6f, .6f);
+        ambientDrone1.panStereo = panPosition;
+        ambientDrone2.panStereo = panPosition;
+    
+    }
+
 
     void OnTriggerEnter(Collider coll) {
 
@@ -352,7 +410,7 @@ public class FollowMouse_3D : MonoBehaviour {
     void getClosestFood() {
         float dis = foodRange;
 
-         foreach(GameObject food in foods) {
+         foreach(GameObject food in foodSpawner.foods) {
 
             if (food != null) {
                 Vector2 foodPos = new Vector2(food.transform.position.x, food.transform.position.z);
@@ -376,27 +434,6 @@ public class FollowMouse_3D : MonoBehaviour {
         //Vector2 koiPos = new Vector2(transform.position.x, transform.position.z); 
         line.SetPosition(0, transform.position);
         line.SetPosition(1, closestFood.transform.position);
-    }
-
-    void ToggleAmbient() {
-
-         if (Input.GetMouseButtonDown(0) && listeningForDoubleTap && doubleTapTimer < 5) {
-            GameMaster.me.ambientMode = !GameMaster.me.ambientMode;
-            doubleTapTimer=0;
-            listeningForDoubleTap=false;
-        }
-
-        if (Input.GetMouseButtonDown(0)) {
-            listeningForDoubleTap = true;
-        }
-
-        if (listeningForDoubleTap) {
-            doubleTapTimer++;
-            if (doubleTapTimer>5) {
-                listeningForDoubleTap=false;
-                doubleTapTimer=0;
-            }
-        }
     }
 
 }

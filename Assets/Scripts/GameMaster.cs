@@ -63,9 +63,18 @@ public class GameMaster : MonoBehaviour {
 
 	int[] scale = { 0, 2, 4, 7, 9 };
 
+	public bool WVMode;
+	public int restartTimer;
+
+	public bool desktopMode;
+
 	// Use this for initialization
 	void Start () {
 
+		if (WVMode) {
+			//effects.addBloom(100);
+			//effects.addExposure(2500);
+		}
 		me = this;
 		defaultRainStopChance = rainStopChance;
 		waterMat = waterObj.gameObject.GetComponent<Renderer>().material;
@@ -137,7 +146,7 @@ public class GameMaster : MonoBehaviour {
 
 		rand = Random.Range(0, whaleSpawnChance);
 
-		if (rand==1) {
+		if (rand==1 && !WVMode) {
 			spawnWhale();
 		}
 
@@ -145,6 +154,14 @@ public class GameMaster : MonoBehaviour {
 			effects.addBloom(.005f);
 			effects.addExposure(.005f);
 			AudioManager.Instance.openSequencerFilter();
+
+			if (WVMode) {
+				restartTimer ++;
+
+				if (restartTimer > 2400) {
+					UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+				} 
+			}
 		}
 
 		if (player.friends.Count >= 5) {

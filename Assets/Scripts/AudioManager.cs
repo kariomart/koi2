@@ -71,13 +71,9 @@ public class AudioManager : MonoBehaviour {
 	}
 
 	void Awake () {
-		if (instance != null && instance != this) {
-			Destroy(this.gameObject);
-		} else {
-			instance = this;
-		}
+		instanceMe();
 
-		DontDestroyOnLoad(this.gameObject);
+		//DontDestroyOnLoad(this.gameObject);
 		scales[0] = pentatonicScaleC3;
 		scales[1] = mixolydianScale;
 		scales[2] = dorianScale;
@@ -93,6 +89,14 @@ public class AudioManager : MonoBehaviour {
 		// }
 
 		
+	}
+
+	public void instanceMe() {
+		if (instance != null && instance != this) {
+			Destroy(this.gameObject);
+		} else {
+			instance = this;
+		}
 	}
 	//========================================================================
 

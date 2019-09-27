@@ -21,12 +21,17 @@ public class TitleController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		
-
-		if (Input.GetMouseButtonDown(0) && !started) {
+		if (!GameMaster.me.WVMode) {
+			if (Input.GetMouseButtonDown(0) && !started) {
+				player.enabled = true;
+				AudioManager.Instance.PlaySFX(a, .1f, 1, AudioManager.Instance.abstractAmbience);
+				started=true;
+				//Destroy(this.gameObject, 8f);
+				fading = true;
+			}
+		} else {
 			player.enabled = true;
-			AudioManager.Instance.PlaySFX(a, .1f, 1, AudioManager.Instance.abstractAmbience);
 			started=true;
-			//Destroy(this.gameObject, 8f);
 			fading = true;
 		}
 
