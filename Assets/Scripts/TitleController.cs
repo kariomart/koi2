@@ -24,7 +24,8 @@ public class TitleController : MonoBehaviour {
 		if (!GameMaster.me.WVMode) {
 			if (Input.GetMouseButtonDown(0) && !started) {
 				player.enabled = true;
-				AudioManager.Instance.PlaySFX(a, .1f, 1, AudioManager.Instance.abstractAmbience);
+				player.changeMaterial();
+				//AudioManager.Instance.PlaySFX(a, .1f, 1, AudioManager.Instance.abstractAmbience);
 				started=true;
 				//Destroy(this.gameObject, 8f);
 				fading = true;

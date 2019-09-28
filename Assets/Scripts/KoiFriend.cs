@@ -25,6 +25,8 @@ public class KoiFriend : MonoBehaviour
 
     public bool chording;
 
+    public AudioSource drone;
+    public bool droning;
 
 
     // Start is called before the first frame update
@@ -70,7 +72,43 @@ public class KoiFriend : MonoBehaviour
         transform.position = new Vector3(transform.position.x+dir.x*speed, .51f, transform.position.z+dir.y*speed);
        // transform.position = new Vector3(transform.position.x + lerpPos.x*speed, 0.51f, transform.position.z + lerpPos.y*speed);
         speed *= .9f;
+        if (droning) {
+            ambientDrone();
+        }
         //transform.position = new Vector3(transform.position.x, .51f, transform.position.z);
+    }
+
+    void ambientDrone() {
+
+        float maxVol = 1f;
+        float minVolume = .1f;
+        float dis = Vector2.Distance(player.pos, pos);
+        //Debug.Log(dis);
+        float vol = Mathf.Lerp(minVolume, maxVol, 3f/dis);
+        drone.volume = vol;
+        
+        float panPosition = pos.x - player.pos.x;
+        panPosition = AudioManager.RemapFloat(panPosition, -10f, 10f, -.8f, .8f);
+        drone.panStereo = panPosition;
+
+    }
+
+    public void pickDroneNote() {
+
+        int[] m7 = GameMaster.me.major7th;
+        int lastNoteIndex = GameMaster.me.lastFriendDroneNote;
+        int noteIndex = GameMaster.me.friendDroneNoteIndex;
+
+        drone.clip = AudioManager.Instance.friendDroneNotes[lastNoteIndex + m7[noteIndex]];
+        drone.Play();
+        GameMaster.me.friendDroneNoteIndex++;
+        GameMaster.me.friendDroneNoteIndex %= m7.Length;
+
+        GameMaster.me.lastFriendDroneNote += m7[noteIndex];
+        Debug.Log(GameMaster.me.lastFriendDroneNote);
+        GameMaster.me.lastFriendDroneNote %= AudioManager.Instance.friendDroneNotes.Length;
+        Debug.Log(GameMaster.me.lastFriendDroneNote);
+
     }
 
     public void playSound() {
@@ -108,7 +146,8 @@ public class KoiFriend : MonoBehaviour
     }
 
     public void spawnRipple() {
-        Instantiate(ripple, new Vector3(pos.x, 0.51f, pos.y), Quaternion.identity);
+        GameObject r = Instantiate(ripple, new Vector3(pos.x, 0.51f, pos.y), Quaternion.identity);
+        r.transform.SetParent(GameMaster.me.VFX);
     }
 }
 

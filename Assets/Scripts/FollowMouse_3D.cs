@@ -57,15 +57,14 @@ public class FollowMouse_3D : MonoBehaviour {
     public bool traveling;
     public GameObject randomFood;
 
-    bool listeningForDoubleTap = false;
-    int doubleTapTimer;
 
     public int ambientTimer = 0;
 
-    public AudioSource ambientDrone1;
-    public AudioSource ambientDrone2;
+    public AudioSource droneSource;
     float desiredDroneVolume;
-    public int[] droneStatus = new int[2]{0,0};
+
+    public Material defaultMat;
+    public Material koiOverlay;
 
 
     // Use this for initialization
@@ -81,47 +80,20 @@ public class FollowMouse_3D : MonoBehaviour {
         depthPercentage = 1;
         FX = GetComponent<ParticleSystem>();
         waterShader = water.GetComponent<Renderer>().material;
+        defaultMat = GetComponent<ParticleSystemRenderer>().material;
         getRandomFood();
     }
   
   // Update is called once per frame
   void FixedUpdate () {
 
-        ambientTimer ++;
-
-        if (ambientTimer > 1000 && !GameMaster.me.ambientMode) {
-            GameMaster.me.ambientMode = true;
-        }
-
-        if (Input.GetMouseButtonDown(0)) {
-            if (droneStatus[0] == 0) {
-                //ambientDrone1.time = Random.Range(0, ambientDrone1.clip.length);
-                droneStatus[0] = 1;
-                droneStatus[1] = 0;
-            } else {
-                //ambientDrone1.time = Random.Range(0, ambientDrone2.clip.length);
-                droneStatus[1] = 1;
-                droneStatus[0] = 0;
-            }
-        } 
-
-        if (Input.GetMouseButtonUp(0)) {
-            droneStatus[0] = 0;
-            droneStatus[1] = 0;
-        }
-
-        if (Input.GetMouseButton(0)) {
-            ambientTimer=0;
-            GameMaster.me.ambientMode = false;
-        }
-
+        checkAmbientMode();
         ambientDrone();
 
-        //ambientDrone.volume = Mathf.MoveTowards(ambientDrone.volume, desiredDroneVolume, .01f);
 
 
         pos = new Vector2(transform.position.x, transform.position.z);
-        //checkPosition();
+
         waterSounds();
         if (foods.Count > 2) {
             checkFood();
@@ -130,14 +102,8 @@ public class FollowMouse_3D : MonoBehaviour {
         Vector3 oldMouseDir = mouseDir;
 
         mouseDir = (cam.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized;
-
-        if (!randomFood) {
-            //getRandomFood();
-        }
-        
-        //Vector3 adjustedMouseDir = Vector3.Lerp(oldMouseDir, mouseDir, 1-(speed/maxSpeed));
-
         mouseDir.y=.51f;
+
         if (Input.GetMouseButton(0)) {
             speed+=accel;
         } else {
@@ -146,8 +112,7 @@ public class FollowMouse_3D : MonoBehaviour {
 
         speed = Mathf.Clamp(speed, 0, maxSpeed);
 
-        //reticle.position = Vector2.Lerp(transform.position, cam.ScreenToWorldPoint(Input.mousePosition), moveSpeed) + mouseDir * 2;
-        //transform.position = Vector3.Lerp(transform.position, mouseDir, moveSpeed);
+
         if (!GameMaster.me.ambientMode) {
             dir = mouseDir;
         } else {
@@ -162,53 +127,17 @@ public class FollowMouse_3D : MonoBehaviour {
 
         transform.position = transform.position + dir * speed;
         transform.position = new Vector3(transform.position.x, .51f, transform.position.z);
-        //rb.MovePosition(transform.position+mouseDir*speed);
-        //water.transform.position = transform.position;
-        //waterShader.SetVector("_Offset", new Vector4(transform.position.x, transform.position.z, 0, 0));
 
         AudioManager.Instance.updateDebug();
-        //float rotation_z = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
-        //transform.rotation = Quaternion.Euler(0f, 0f, rotation_z - 90f);
 
         if (Input.GetKeyDown(KeyCode.Space)) {
-            int rand  = Random.Range(0, AudioManager.Instance.scales.Length);
-
-            while (rand == AudioManager.Instance.scaleNum) {
-				rand = Random.Range(0, AudioManager.Instance.scales.Length);
-			}
-            AudioManager.Instance.scaleNum = rand;
+            GameMaster.me.spawnFriend();
         }
 
         if (Input.GetKeyDown(KeyCode.Z)) {
             //AudioManager.Instance.scaleNum = AudioManager.Instance.scaleNum % AudioManager.Instance.scales.Length;
 
         }
-
-        // if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S)) {
-        //     AudioManager.Instance.LowerSFXOctave();
-            
-        // }
-
-        // if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)) {
-        //     AudioManager.Instance.RaiseSFXOctave();
-        // }
-
-        // if (goingUp) {
-        //     if (depth > minDepth) {
-        //         depth --;
-        //     } else {
-        //         goingUp = false;
-        //         goingDown = true;
-        //     }
-        // }
-
-        // if (goingDown) {
-        //     if (depth < maxDepth) {
-        //         depth ++;
-        //     } else {
-        //         goingDown = false;
-        //     }
-        // }
 
         float scale = transform.localScale.x;
 
@@ -254,43 +183,17 @@ public class FollowMouse_3D : MonoBehaviour {
        //Debug.Log(depthPercentage);
     }
 
-    void acceleration() {
 
-        xSpeed+= -accel*Mathf.Sign(transform.position.x-mouseDir.x);
-        ySpeed+= -accel*Mathf.Sign(transform.position.y-mouseDir.y);
+    void checkAmbientMode() {
+         ambientTimer ++;
 
-        xSpeed = Mathf.Clamp(xSpeed, -maxSpeed, maxSpeed);
-        ySpeed = Mathf.Clamp(ySpeed, -maxSpeed, maxSpeed);
-
-    }
-
-    void deacceleration() {
-
-        if (xSpeed > 0) {
-            xSpeed -=deaccel;
-        } else {
-            xSpeed +=deaccel;
+        if (ambientTimer > 1000 && !GameMaster.me.ambientMode) {
+            GameMaster.me.ambientMode = true;
         }
 
-        if (ySpeed > 0) {
-            ySpeed -=deaccel;
-        } else {
-            ySpeed +=deaccel;
-        }
-
-        xSpeed = Mathf.Clamp(xSpeed, -maxSpeed, maxSpeed);
-        ySpeed = Mathf.Clamp(ySpeed, -maxSpeed, maxSpeed);
-
-    }
-
-    void checkPosition() {
-
-        if (Mathf.Abs(transform.position.x) > MapGenerator.me.tileSize * MapGenerator.me.xTiles / 2) {
-            transform.position = Vector2.zero;
-        }
-
-        if (Mathf.Abs(transform.position.y) > MapGenerator.me.tileSize * MapGenerator.me.yTiles / 2) {
-            transform.position = Vector2.zero;
+        if (Input.GetMouseButton(0)) {
+            ambientTimer=0;
+            GameMaster.me.ambientMode = false;
         }
     }
 
@@ -308,35 +211,18 @@ public class FollowMouse_3D : MonoBehaviour {
     }
 
     void ambientDrone() {
-        float maxVol = .6f;
+        float maxVol = .25f;
         float minVolume = .05f;
-        float rate = .001f;
-
-        if (droneStatus[0] == 1) {
-            if (ambientDrone1.volume < maxVol) {
-                ambientDrone1.volume+=rate;
-            }
-        } else if (droneStatus[0] == 0) {
-            if (ambientDrone1.volume > minVolume) {
-                ambientDrone1.volume-=rate;
-            }
-        }
-
-        if (droneStatus[1] == 1) {
-            if (ambientDrone2.volume < maxVol) {
-                ambientDrone2.volume+=rate;
-            }
-        } else if (droneStatus[1] == 0) {
-            if (ambientDrone2.volume > minVolume) {
-                ambientDrone2.volume-=rate;
-            }
-        }
-
+        
+        float vol = Mathf.Lerp(minVolume, maxVol, speed/maxSpeed);
+        droneSource.volume = vol;
         float panPosition = pos.x - cam.transform.position.x;
-        panPosition = AudioManager.RemapFloat(panPosition, -3f, 3f, -.6f, .6f);
-        ambientDrone1.panStereo = panPosition;
-        ambientDrone2.panStereo = panPosition;
-    
+        panPosition = AudioManager.RemapFloat(panPosition, -3f, 3f, -.4f, .4f);
+        droneSource.panStereo = panPosition;
+    }
+
+    public void changeMaterial() {
+        GetComponent<ParticleSystemRenderer>().material = koiOverlay;
     }
 
 
@@ -386,7 +272,8 @@ public class FollowMouse_3D : MonoBehaviour {
 
     void spawnRipple() {
 
-        Instantiate(foodRipple, new Vector3(pos.x, 0.51f, pos.y), Quaternion.identity);
+        GameObject r = Instantiate(foodRipple, new Vector3(pos.x, 0.51f, pos.y), Quaternion.identity);
+        r.transform.SetParent(GameMaster.me.VFX);
 
     }
 

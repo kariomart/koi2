@@ -61,7 +61,15 @@ public class GameMaster : MonoBehaviour {
 	public GameObject bg;
 	public GameObject title;
 
+	public Transform VFX;
+	public Transform SFX;
+
 	int[] scale = { 0, 2, 4, 7, 9 };
+
+	public int lastFriendDroneNote;
+	int [] rootNotes = {0, 2, 4};
+	public int friendDroneNoteIndex;
+	public int [] major7th = {0, 4, 3, 4};
 
 	public bool WVMode;
 	public int restartTimer;
@@ -85,7 +93,6 @@ public class GameMaster : MonoBehaviour {
 		loadSynths();
 		rainSource = rainSynth.gameObject.GetComponent<AudioSource>();
 		lightningSource = lightningSynth.gameObject.GetComponent<AudioSource>();
-		//spawnFriend();
 		for (int i = 0; i < gameStates.Length; i ++) {
 			gameStates[i] = g.transform.GetChild(i).GetComponent<GameState>();
 		} 
@@ -97,6 +104,7 @@ public class GameMaster : MonoBehaviour {
 				player.friends.Add(c.GetComponent<KoiFriend>());
 			}
 		}
+		lastFriendDroneNote = rootNotes[Random.Range(0, rootNotes.Length)];
 	}
 	
 	// Update is called once per frame
@@ -123,7 +131,7 @@ public class GameMaster : MonoBehaviour {
 
 		int rand = Random.Range(0, sfxChance);
 		
-		if (rand == 10) {
+		if (AudioManager.Instance.aboveWaterSFX.Count > 0 && rand == 10) {
 			rand = Random.Range(0, 101);
 			if (rand > 50) {
 				AudioManager.Instance.PlayRandomAboveWaterSFX();
@@ -146,7 +154,7 @@ public class GameMaster : MonoBehaviour {
 
 		rand = Random.Range(0, whaleSpawnChance);
 
-		if (rand==1 && !WVMode) {
+		if (rand==1 && player.friends.Count > 0) {
 			spawnWhale();
 		}
 
@@ -335,7 +343,13 @@ public class GameMaster : MonoBehaviour {
 		KoiFriend kc = k.GetComponent<KoiFriend>();
 		kc.range+=Random.Range(-1,1);
 		kc.maxSpeed+=Random.Range(-.05f,.1f);
+
 		player.friends.Add(kc);
+
+		if (player.friends.Count < 5) {
+			kc.pickDroneNote();
+			kc.droning = true;
+		}
 		Debug.Log("friend spawned !");
 		player.foodCounter=0;
 	}

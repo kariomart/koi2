@@ -14,7 +14,6 @@ public class MapGenerator : MonoBehaviour {
 	public FollowMouse player;
 	GameObject tiles;
 	List<Vector2> tileOrigins = new List<Vector2>();
-	Vector2 tileOrigin;
 
 
 	// Use this for initialization
@@ -31,29 +30,4 @@ public class MapGenerator : MonoBehaviour {
 
 	}
 
-
-
-
-	void checkPlayer() {
-
-
-		foreach(Vector2 pos in tileOrigins) {
-
-			float halfWidth = tileSize * xTiles / 2;
-			float maxXPos = pos.x + halfWidth;
-
-			if (Mathf.Abs(player.transform.position.x) > maxXPos) {
-				Vector2 newOrigin = new Vector2(tileOrigin.x + halfWidth * 2, tileOrigin.y);
-				PlaceBackground(newOrigin);
-			} 
-		}
-	}
-
-	void PlaceBackground(Vector2 pos) {
-
-		Instantiate(bg, pos, Quaternion.identity);
-		tileOrigins.Add(pos);
-
-
-	}
 }

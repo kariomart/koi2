@@ -22,8 +22,9 @@ public class AudioManager : MonoBehaviour {
 	//this is where our game SFX are going to live
 
 	[Header("SFX")]
-	public AudioClip[] aboveWaterSFX;
-	public AudioClip[] underwaterSFX;
+	//public AudioClip[] aboveWaterSFX;
+	public List<AudioClip> aboveWaterSFX;
+	public List<AudioClip> underwaterSFX;
 	public AudioClip[] rainSFX;
 	
 	//clips that play when we activate different objects
@@ -32,6 +33,10 @@ public class AudioManager : MonoBehaviour {
 	public AudioClip[] pentatonicScaleC3;
 	public AudioClip[] pentatonicScaleC2;
 	public AudioClip[] dorianScale;
+
+	[Header("Ambient Drones")]
+	public AudioClip[] friendDroneNotes;
+
 	
 	
 	//our audio mixer groups, which we are routing our sfx to
@@ -126,38 +131,18 @@ public class AudioManager : MonoBehaviour {
 	}
 
 	public void PlayRandomAboveWaterSFX() {
-		//Plays a random site sound when we find a site (one of the large circles)
 		AudioClip sfx;
-		//First find a clip randomly from the array
-		int rand = Random.Range(0, aboveWaterSFX.Length);
-
-		while (rand == lastNotePlayed) {
-			rand = Random.Range(0, aboveWaterSFX.Length);
-		}
-
-		lastAboveWaterSoundPlayed = rand;
+		int rand = Random.Range(0, aboveWaterSFX.Count);
 		sfx = aboveWaterSFX[rand];	
-//		Debug.Log(dis);
-		
-		//Then we play this clip - note that nothing is changing for panning and volume is set at 1.0
+		aboveWaterSFX.Remove(sfx);
 		CreateRandomSound(sfx, 1.0f, 1, sfxMixer);
 	}
 
 	public void PlayRandomUnderwaterSFX() {
-		//Plays a random site sound when we find a site (one of the large circles)
 		AudioClip sfx;
-		//First find a clip randomly from the array
-		int rand = Random.Range(0, underwaterSFX.Length);
-
-		while (rand == lastUnderwaterSoundPlayed) {
-			rand = Random.Range(0, underwaterSFX.Length);
-		}
-
-		lastUnderwaterSoundPlayed = rand;
+		int rand = Random.Range(0, underwaterSFX.Count);
 		sfx = underwaterSFX[rand];	
-//		Debug.Log(dis);
-		
-		//Then we play this clip - note that nothing is changing for panning and volume is set at 1.0
+		underwaterSFX.Remove(sfx);
 		CreateRandomSound(sfx, 1.0f, 1, underwaterSFXMixer);
 	}
 
@@ -215,7 +200,7 @@ public class AudioManager : MonoBehaviour {
 	//This is a general method to instantiate our SFX prefab with the settings that we want, then destroy it when it's
 	//done playing
 	public void PlaySFX (AudioClip g_SFX, float g_Volume, float g_Pan, AudioMixerGroup g_destGroup) {
-		GameObject t_SFX = Instantiate (myPrefabSFX) as GameObject;
+		GameObject t_SFX = Instantiate (myPrefabSFX, GameMaster.me.SFX) as GameObject;
 		t_SFX.name = "SFX_" + g_SFX.name;
 		AudioSource source = t_SFX.GetComponent<AudioSource> ();
 		source.clip = g_SFX;
@@ -227,9 +212,7 @@ public class AudioManager : MonoBehaviour {
 	}
 
 	public void PlaySFX (AudioClip g_SFX, float g_Volume, float g_Pan, float g_distance, AudioMixerGroup g_destGroup) {
-
-		
-		GameObject t_SFX = Instantiate (myPrefabSFX) as GameObject;
+		GameObject t_SFX = Instantiate (myPrefabSFX, GameMaster.me.SFX) as GameObject;
 		t_SFX.name = "SFX_" + g_SFX.name;
 		AudioSource source = t_SFX.GetComponent<AudioSource> ();
 		source.clip = g_SFX;
@@ -243,6 +226,7 @@ public class AudioManager : MonoBehaviour {
 
 	public void CreateRandomSound (AudioClip g_SFX, float g_Volume, float g_Pan, AudioMixerGroup g_destGroup) {
 		GameObject t_SFX = Instantiate (myPrefabSFX, new Vector3(player.transform.position.x + Random.Range(-10f, 10f), player.transform.position.y,  player.transform.position.z + Random.Range(-10f, 10f)), Quaternion.identity);
+		t_SFX.transform.SetParent(GameMaster.me.SFX);
 		t_SFX.name = "SFX_" + g_SFX.name;
 		AudioSource source = t_SFX.GetComponent<AudioSource> ();
 		activeSFX.Add(source);
