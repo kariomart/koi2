@@ -6,6 +6,7 @@ using AudioHelm;
 public class GameMaster : MonoBehaviour {
 
 	public bool ambientMode; 
+	public bool flowMode;
 
 	public static GameMaster me;
 	public FollowMouse_3D player;
@@ -67,7 +68,8 @@ public class GameMaster : MonoBehaviour {
 	int[] scale = { 0, 2, 4, 7, 9 };
 
 	public int lastFriendDroneNote;
-	int [] rootNotes = {0, 2, 4};
+	int [] rootNotes = {0};
+	public int rootNote;
 	public int friendDroneNoteIndex;
 	public int [] major7th = {0, 4, 3, 4};
 
@@ -76,13 +78,17 @@ public class GameMaster : MonoBehaviour {
 
 	public bool desktopMode;
 
+	public float flow;
+	public float flowTime;
+	float maxFlowTimer = 6000;
+	float flowTimer = 1200;
+	public bool resetting;
+	public int resetTime;
+	int resetTimer = 240;
+
 	// Use this for initialization
 	void Start () {
 
-		if (WVMode) {
-			//effects.addBloom(100);
-			//effects.addExposure(2500);
-		}
 		me = this;
 		defaultRainStopChance = rainStopChance;
 		waterMat = waterObj.gameObject.GetComponent<Renderer>().material;
@@ -97,21 +103,44 @@ public class GameMaster : MonoBehaviour {
 			gameStates[i] = g.transform.GetChild(i).GetComponent<GameState>();
 		} 
 
-
-		foreach (Transform c in GameObject.Find("Friends").transform)
-		{
-			if (c.gameObject.activeInHierarchy) {
-				player.friends.Add(c.GetComponent<KoiFriend>());
-			}
-		}
 		lastFriendDroneNote = rootNotes[Random.Range(0, rootNotes.Length)];
+		rootNote = lastFriendDroneNote;
+		player.friendCounter = 16;
+		resetTime = 0;
+		player.firstFriend = 4 + Random.Range(0,4);
+		AudioManager.Instance.setMixDefaults();
+		AudioManager.Instance.aboveWaterSFXBackup = new List<AudioClip>(AudioManager.Instance.aboveWaterSFX);
+		player.maxSpeed = 0.025f;
+		player.defMaxSpeed = player.maxSpeed;
 	}
 	
 	// Update is called once per frame
 	void FixedUpdate () {
 
+		if (!flowMode) {
+			DayNightCycle();
+		} else {
+			flowTime ++;
+		}
 
-		if (!gameover) {
+		if (flowTime > flowTimer) {
+			ResetGame();
+		}
+
+		if (flow >= 1 && !resetting && !flowMode) {
+			flowMode = true;
+			effects.SetDay();
+		}
+
+		if (resetting) {
+			resetTime ++;
+
+			if (resetTime > resetTimer) {
+				resetting = false;
+			}
+		}
+
+		if (!gameover && flow < .8f) {
 			AudioManager.Instance.updateFilters();
 			AudioManager.Instance.updateFX();
 			AudioManager.Instance.spatializeSFX();
@@ -159,24 +188,14 @@ public class GameMaster : MonoBehaviour {
 		}
 
 		if (gameover) {
-			effects.addBloom(.005f);
-			effects.addExposure(.005f);
+			//effects.addBloom(.005f);
+			//effects.addExposure(.005f);
 			AudioManager.Instance.openSequencerFilter();
-
-			if (WVMode) {
-				restartTimer ++;
-
-				if (restartTimer > 2400) {
-					UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
-				} 
-			}
 		}
 
 		if (player.friends.Count >= 5) {
 			// /RandomFriendSoundChance();
 		}
-
-		DayNightCycle();
 
 
 		if (raining) {
@@ -215,8 +234,12 @@ public class GameMaster : MonoBehaviour {
 			if (dropChance < 10) {
 				rainStopChance--;
 			}
+
+			if (Input.GetKeyDown(KeyCode.Escape)) {
+				UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+			}
 		
-		}	
+		}
 		
 	}
 
@@ -225,13 +248,13 @@ public class GameMaster : MonoBehaviour {
 		time++;
 
 
-		if (time > dayLength && isDay && !cycling) {
+		if (time > dayLength && isDay && !cycling && !flowMode) {
 			effects.StartCoroutine(effects.NightTime());
 //			Debug.Log("going to night");
 			cycling = true;
 		}	
 		
-		if (time > dayLength & !isDay && !cycling) {
+		if (time > dayLength & !isDay && !cycling && !flowMode) {
 			effects.StartCoroutine(effects.DayTime());
 			//Debug.Log("going to day");
 			cycling = true;
@@ -258,6 +281,8 @@ public class GameMaster : MonoBehaviour {
 	}
 	public void enableSequencers() {
 
+		//AudioManager.Instance.sequencers.SetFloat("lowPassFreq", 0);
+        //AudioManager.Instance.sequencers.SetFloat("Volume", -40);
 		sequencer.enabled=!sequencer.enabled;
 		sequencerChords.enabled=!sequencerChords.enabled;
 		whaleSequencer.enabled=!whaleSequencer.enabled;
@@ -289,8 +314,8 @@ public class GameMaster : MonoBehaviour {
 
 		float t = .25f * Random.Range(1,3);
 		yield return new WaitForSeconds(t);
-		List<KoiFriend> tempKoi = new List<KoiFriend>();
-		tempKoi = player.friends;
+		List<KoiFriend> tempKoi = new List<KoiFriend>(player.friends);
+		//tempKoi = player.friends;
 		
 		foreach (KoiFriend k in tempKoi)
 		{
@@ -307,8 +332,8 @@ public class GameMaster : MonoBehaviour {
 
 		float t = 1f;
 		yield return new WaitForSeconds(t);
-		List<KoiFriend> tempKoi = new List<KoiFriend>();
-		tempKoi = player.friends;
+		List<KoiFriend> tempKoi = new List<KoiFriend>(player.friends);
+		//tempKoi = player.friends;
 		
 		foreach (KoiFriend k in tempKoi)
 		{
@@ -322,15 +347,14 @@ public class GameMaster : MonoBehaviour {
 
 	public void gameIsOver() {
 
-		canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-		bg.SetActive(true);
-		title.SetActive(true);
+		gameover = true;
+		GameMaster.me.enableSequencers();
 
 	}
 
 	public void tryToSpawnFriend() {
 
-		int rand = Random.Range(0,3);
+		int rand = Random.Range(0,5);
 
 		if (rand == 1) {
 			spawnFriend();
@@ -338,11 +362,38 @@ public class GameMaster : MonoBehaviour {
 		}
 	}
 
+	public void ResetGame() {
+		flowMode = false;
+		resetting=true;
+		time = 0;
+		isDay = true;
+		AudioManager.Instance.aboveWaterSFX = new List<AudioClip>(AudioManager.Instance.aboveWaterSFXBackup);
+		Start();
+		//effects.setBloom(15);
+		effects.SetDay();
+		Debug.Log("resetting");
+		flowTimer = 0;
+		//clear out sequencers
+	}
+
+	void resetFriends() {
+
+		foreach(KoiFriend f in player.friends) {
+			Destroy(f.gameObject);
+		}
+		player.friends.Clear();
+		player.friendCounter = 16;
+
+	}
+
 	public void spawnFriend() {
 		GameObject k = Instantiate(koiFriendPrefab, new Vector3(player.pos.x+Random.Range(-20,20), 0.5f, player.pos.y+Random.Range(-20,20)), Quaternion.identity);
 		KoiFriend kc = k.GetComponent<KoiFriend>();
 		kc.range+=Random.Range(-1,1);
 		kc.maxSpeed+=Random.Range(-.05f,.1f);
+		if (player.defMaxSpeed < 0.035f) {
+			player.defMaxSpeed += 0.005f;
+		}
 
 		player.friends.Add(kc);
 

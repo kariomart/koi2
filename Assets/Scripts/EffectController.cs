@@ -17,9 +17,9 @@ public class EffectController : MonoBehaviour
     float vignetteMax = .45f;
 	float vignetteMin = .40f;
 
-    float bloomDefault = 3.8f;
-    float bloomMin = 3.8f;
-    float bloomMax = 5.5f;
+    float bloomDefault = 2.52f;
+    float bloomMin = 2.27f;
+    float bloomMax = 20f;
 
     public float dayHue = 5.99f;
     public float daySat = 14f;
@@ -27,6 +27,9 @@ public class EffectController : MonoBehaviour
 	public float nightHue = 39f;
     public float dayVig = .504f;
     public float nightVig = .8f;
+
+    public float desiredHue;
+
 
     // Start is called before the first frame update
     void Start()
@@ -46,7 +49,26 @@ public class EffectController : MonoBehaviour
     void FixedUpdate()
     {
 
-    
+        if (bloomLayer.intensity.value > bloomDefault && !GameMaster.me.flowMode) {
+            addBloom(-.01f);
+        }
+
+        if (GameMaster.me.flowMode) {
+            colorGradingLayer.hueShift.value = Mathf.MoveTowards(colorGradingLayer.hueShift.value, desiredHue, 1f);
+        }
+
+        if (GameMaster.me.resetting) {
+            if (bloomLayer.intensity.value > bloomMin) {
+                Debug.Log("getting rid of bloom!");
+                addBloom(-0.1f); 
+            } else {
+            } 
+        }
+
+
+        GameMaster.me.flow = bloomLayer.intensity.value / bloomMax;
+        AudioManager.Instance.SequencerFilters(GameMaster.me.flow);
+//      Debug.Log(GameMaster.me.flow);
         
     }
 
@@ -91,14 +113,9 @@ public class EffectController : MonoBehaviour
     }
 
     public void addBloom(float amt) {
-        if (bloomLayer.intensity.value < 100) {
-            bloomLayer.intensity.value += amt;
-        }
-//        Debug.Log(bloomLayer.intensity.value>100f);
 
-        if (bloomLayer.intensity >= 2500) {
-            Debug.Log("wee");
-            GameMaster.me.gameIsOver();
+        if (Mathf.Sign(amt) == -1 || bloomLayer.intensity.value < bloomMax) {
+            bloomLayer.intensity.value += amt;
         }
     }
 
@@ -108,17 +125,10 @@ public class EffectController : MonoBehaviour
         }
     }
 
-    public void setBloom(float depth) {
+    public void setBloom(float val) {
 
-        // float currentBloom = bloomLayer.intensity;
-        // float desiredBloom = Mathf.Lerp(bloomMin, bloomMax, 1-depth);
-        // float newBloom = Mathf.MoveTowards(currentBloom, desiredBloom, .01f);
-        // bloomLayer.intensity.value = newBloom;
-        
-        float currentBloom = bloomLayer.intensity.value;
-        float desiredBloom = Mathf.MoveTowards(currentBloom, bloomMin, .01f);
-        bloomLayer.intensity.value = desiredBloom;
-//        Debug.Log(bloomLayer.intensity.value);
+        bloomLayer.intensity.value = val;
+
     }
 
     public void StartPumpingBloom() {
@@ -156,17 +166,29 @@ public class EffectController : MonoBehaviour
          GameMaster.me.isDay = true;
          GameMaster.me.time=0;
     }
+
+    public void ShiftHue() {
+        desiredHue = Random.Range(-180, 180);
+    }
+
+    public void SetDay() {
+        colorGradingLayer.saturation.value = daySat;
+        colorGradingLayer.hueShift.value = dayHue;
+        vignetteLayer.smoothness.value = dayVig;
+    }
+
+
     public IEnumerator PumpBloom() 
     {   
         for (int i = 0; i < 100; i++) 
         {
-            bloomLayer.intensity.value += .05f;
+            bloomLayer.intensity.value += .01f*GameMaster.me.player.friends.Count;
             yield return new WaitForSeconds(.0001f);
         }
         
          for (int i = 0; i < 100; i++) 
         {
-            bloomLayer.intensity.value -= .05f;
+            bloomLayer.intensity.value -= .01f;
             yield return new WaitForSeconds(.0001f);
         }
     }

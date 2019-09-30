@@ -6,7 +6,7 @@ public class KoiFriend : MonoBehaviour
 {
 
     FollowMouse_3D player;
-    ParticleSystem particles;
+    public ParticleSystem particles;
     AudioSource synthAudio;
     public float dis;
     public float range;
@@ -28,6 +28,7 @@ public class KoiFriend : MonoBehaviour
     public AudioSource drone;
     public bool droning;
 
+    float bloomAmt = .4f;
 
     // Start is called before the first frame update
     void Start()
@@ -84,7 +85,7 @@ public class KoiFriend : MonoBehaviour
         float minVolume = .1f;
         float dis = Vector2.Distance(player.pos, pos);
         //Debug.Log(dis);
-        float vol = Mathf.Lerp(minVolume, maxVol, 3f/dis);
+        float vol = Mathf.Lerp(minVolume, maxVol, 5f/dis);
         drone.volume = vol;
         
         float panPosition = pos.x - player.pos.x;
@@ -105,16 +106,16 @@ public class KoiFriend : MonoBehaviour
         GameMaster.me.friendDroneNoteIndex %= m7.Length;
 
         GameMaster.me.lastFriendDroneNote += m7[noteIndex];
-        Debug.Log(GameMaster.me.lastFriendDroneNote);
+        //Debug.Log(GameMaster.me.lastFriendDroneNote);
         GameMaster.me.lastFriendDroneNote %= AudioManager.Instance.friendDroneNotes.Length;
-        Debug.Log(GameMaster.me.lastFriendDroneNote);
+        //Debug.Log(GameMaster.me.lastFriendDroneNote);
 
     }
 
     public void playSound() {
         Debug.Log(name, synthAudio);
         synthAudio.panStereo = AudioManager.Instance.getPan(transform);     
-        sfx.playNote();
+        sfx.playNote(pos, player.pos);
         
         addSize();
     }
@@ -122,15 +123,16 @@ public class KoiFriend : MonoBehaviour
     public void playChordNote() {
 
         chordSynth.playNote(2,-17);
+        player.effects.addBloom(bloomAmt);
 
     }
 
     public void playFriendSound() {
 
         friendSynth.playNote(1.5f,-22);
+        player.effects.addBloom(bloomAmt);
 
     }
-
 
     public void addSize() {
         var main = particles.main;

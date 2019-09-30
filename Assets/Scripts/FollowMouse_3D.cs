@@ -4,13 +4,11 @@ using UnityEngine;
 
 public class FollowMouse_3D : MonoBehaviour {
 
-    public float moveSpeed = 0.004f;
-    public float xSpeed;
-    public float ySpeed;
     public float speed;
-    public float accel = 0.0001f;
-    public float deaccel = 0.0001f;
-    public float maxSpeed = 0.001f;
+    public float accel;
+    public float deaccel;
+    public float maxSpeed;
+    public float defMaxSpeed;
 
     public Vector2 pos;
     Camera cam;
@@ -46,9 +44,10 @@ public class FollowMouse_3D : MonoBehaviour {
     public FoodSpawn foodSpawner;
 
     public List<KoiFriend> friends = new List<KoiFriend>();
-    float bloomAmt = .25f;
+    float bloomAmt = .5f;
     public int foodCounter;
     public int friendCounter = 16;
+    public int firstFriend;
 
     Rigidbody rb;
     Vector3 dir;
@@ -59,12 +58,19 @@ public class FollowMouse_3D : MonoBehaviour {
 
 
     public int ambientTimer = 0;
+    int gameStartedTimer;
+	int ambientModeLockout = 480;
 
     public AudioSource droneSource;
     float desiredDroneVolume;
 
     public Material defaultMat;
     public Material koiOverlay;
+
+    public Transform mouseDeciple;
+    float mouseTimer;
+    float droneTime = 120;
+
 
 
     // Use this for initialization
@@ -81,15 +87,19 @@ public class FollowMouse_3D : MonoBehaviour {
         FX = GetComponent<ParticleSystem>();
         waterShader = water.GetComponent<Renderer>().material;
         defaultMat = GetComponent<ParticleSystemRenderer>().material;
-        getRandomFood();
+        //getRandomFood();
+        getClosestFood();
+        
+        defMaxSpeed = maxSpeed;
     }
   
   // Update is called once per frame
   void FixedUpdate () {
 
-        checkAmbientMode();
+        if (!GameMaster.me.flowMode) {
+            checkAmbientMode();
+        }
         ambientDrone();
-
 
 
         pos = new Vector2(transform.position.x, transform.position.z);
@@ -101,14 +111,22 @@ public class FollowMouse_3D : MonoBehaviour {
 
         Vector3 oldMouseDir = mouseDir;
 
-        mouseDir = (cam.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized;
+        mouseDir = (mouseDeciple.position - transform.position).normalized;
         mouseDir.y=.51f;
 
         if (Input.GetMouseButton(0)) {
             speed+=accel;
+            if (mouseTimer < droneTime){
+                mouseTimer ++;
+            }
         } else {
-            speed-=accel;
+            speed-=deaccel;
+            if (mouseTimer > 0) {
+                mouseTimer --;
+            }
         }
+
+        maxSpeed = Mathf.MoveTowards(maxSpeed, defMaxSpeed, .00002f);
 
         speed = Mathf.Clamp(speed, 0, maxSpeed);
 
@@ -127,6 +145,7 @@ public class FollowMouse_3D : MonoBehaviour {
 
         transform.position = transform.position + dir * speed;
         transform.position = new Vector3(transform.position.x, .51f, transform.position.z);
+        reticle.position = mouseDeciple.position;
 
         AudioManager.Instance.updateDebug();
 
@@ -134,9 +153,8 @@ public class FollowMouse_3D : MonoBehaviour {
             GameMaster.me.spawnFriend();
         }
 
-        if (Input.GetKeyDown(KeyCode.Z)) {
-            //AudioManager.Instance.scaleNum = AudioManager.Instance.scaleNum % AudioManager.Instance.scales.Length;
-
+        if (Input.GetKeyDown(KeyCode.A)) {
+            GameMaster.me.ambientMode = !GameMaster.me.ambientMode;
         }
 
         float scale = transform.localScale.x;
@@ -180,20 +198,26 @@ public class FollowMouse_3D : MonoBehaviour {
             main.startLifetime = new ParticleSystem.MinMaxCurve(1.5f, 2f);
         }
 
-       //Debug.Log(depthPercentage);
+       gameStartedTimer++;
     }
 
 
     void checkAmbientMode() {
-         ambientTimer ++;
+        // ambientTimer ++;
 
-        if (ambientTimer > 1000 && !GameMaster.me.ambientMode) {
+        // if (ambientTimer > 1000 && !GameMaster.me.ambientMode) {
+        //     GameMaster.me.ambientMode = true;
+        // }
+
+        if (speed == 0 && gameStartedTimer>ambientModeLockout) {
             GameMaster.me.ambientMode = true;
+            reticle.gameObject.SetActive(false);
         }
 
         if (Input.GetMouseButton(0)) {
             ambientTimer=0;
             GameMaster.me.ambientMode = false;
+            reticle.gameObject.SetActive(true);
         }
     }
 
@@ -211,10 +235,12 @@ public class FollowMouse_3D : MonoBehaviour {
     }
 
     void ambientDrone() {
-        float maxVol = .25f;
-        float minVolume = .05f;
+
+        float minVolume = .1f;
+        float maxVol = .5f;
         
-        float vol = Mathf.Lerp(minVolume, maxVol, speed/maxSpeed);
+        
+        float vol = Mathf.Lerp(minVolume, maxVol, mouseTimer/droneTime);
         droneSource.volume = vol;
         float panPosition = pos.x - cam.transform.position.x;
         panPosition = AudioManager.RemapFloat(panPosition, -3f, 3f, -.4f, .4f);
@@ -228,29 +254,38 @@ public class FollowMouse_3D : MonoBehaviour {
 
     void OnTriggerEnter(Collider coll) {
 
-		if (coll.gameObject.layer == LayerMask.NameToLayer("Food")) {
-            getClosestFood();
-            AudioManager.Instance.PlayFoodSound();
-            spawnRipple();
-            foodCounter++;
-            if (friends.Count > 0) {
-                if (coll.gameObject.tag == "Chord") {
-                    Debug.Log("Playing Chord");
-                    GameMaster.me.StartCoroutine("playFriendChord");
+        if (!GameMaster.me.flowMode) {
+            if (coll.gameObject.layer == LayerMask.NameToLayer("Food")) {
+                getClosestFood();
+                AudioManager.Instance.PlayFoodSound();
+                spawnRipple();
+                foodCounter++;
+                if (friends.Count > 0) {
+                    if (coll.gameObject.tag == "Chord") {
+                        Debug.Log("Playing Chord");
+                        GameMaster.me.StartCoroutine("playFriendChord");
+                    } else {
+                        Debug.Log("Playing Note");
+                        GameMaster.me.StartCoroutine("playFriendNotes");
+                    }
+                }
+
+                effects.addBloom(bloomAmt);
+                foodSpawner.spawnAFood();
+                maxSpeed += 0.0035f;
+                if (friends.Count == 0 && foodCounter >= firstFriend) {
+                    GameMaster.me.spawnFriend();
                 } else {
-                    Debug.Log("Playing Note");
-                    GameMaster.me.StartCoroutine("playFriendNotes");
+                    GameMaster.me.tryToSpawnFriend();
+                }
+
+                if (foodCounter != 8 && foodCounter % 8 == 0) {
+                    GameMaster.me.spawnFriend();
                 }
             }
-            //AudioManager.Instance.FX.StartPumpingBloom();
-            effects.addBloom(bloomAmt);
-			Destroy(coll.gameObject);
-            foodSpawner.spawnAFood();
-
-            if (foodCounter >= friendCounter) {
-                GameMaster.me.tryToSpawnFriend();
-            }
 		}
+
+        Destroy(coll.gameObject);
 
         if (coll.gameObject.layer == LayerMask.NameToLayer("FoodRange")) {
             goingUp = true;
@@ -270,9 +305,24 @@ public class FollowMouse_3D : MonoBehaviour {
 
     }
 
+    public void RemoveFriend() {
+        KoiFriend koiFriend = friends[friends.Count-1];
+        koiFriend.particles.Stop();
+        GameObject koiFriendObj = friends[friends.Count-1].gameObject;
+        Destroy(koiFriendObj, 1);
+        friends.RemoveAt(friends.Count-1);
+    }
+
     void spawnRipple() {
 
         GameObject r = Instantiate(foodRipple, new Vector3(pos.x, 0.51f, pos.y), Quaternion.identity);
+        r.transform.SetParent(GameMaster.me.VFX);
+
+    }
+
+    public void spawnRipple(Vector3 position) {
+
+        GameObject r = Instantiate(foodRipple, new Vector3(position.x, 0.51f, position.z), Quaternion.identity);
         r.transform.SetParent(GameMaster.me.VFX);
 
     }

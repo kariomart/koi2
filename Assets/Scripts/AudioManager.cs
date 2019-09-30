@@ -24,6 +24,7 @@ public class AudioManager : MonoBehaviour {
 	[Header("SFX")]
 	//public AudioClip[] aboveWaterSFX;
 	public List<AudioClip> aboveWaterSFX;
+	public List<AudioClip> aboveWaterSFXBackup;
 	public List<AudioClip> underwaterSFX;
 	public AudioClip[] rainSFX;
 	
@@ -50,11 +51,6 @@ public class AudioManager : MonoBehaviour {
 	public AudioMixer underwaterSFXMaster;
 	public AudioMixer sequencers;
 
-	//Mixer snapshots let us crossfade easily between game states.
-	//We can also add weights to multiple snapshots in order to blend them.
-	// [Header("Mixer Snapshots")] 
-	// public AudioMixerSnapshot menuMixerSnapshot;
-	// public AudioMixerSnapshot gameMixerSnapshot;
 	float lowPassMin = 500f;
 	float lowPassMax = 8000f;
 	float chorusMax = .5f;
@@ -283,7 +279,7 @@ public class AudioManager : MonoBehaviour {
 	public void updateFX() {
 
 		FX.addVingette(player.depthPercentage);
-		FX.setBloom(player.depthPercentage);
+		//FX.setBloom(player.depthPercentage);
 
 	}
 
@@ -341,6 +337,30 @@ public class AudioManager : MonoBehaviour {
 		} else {
 			GameMaster.me.player.goingDown = false;
 		}
+	}
+
+	public void SequencerFilters(float flow) {
+
+		float lowPassVal, vol, sfxvol, usfxvol;
+		sequencers.GetFloat("lowPassFreq", out lowPassVal);
+		sequencers.GetFloat("Volume", out vol);
+		sfxMaster.GetFloat("volume", out sfxvol);
+		underwaterSFXMaster.GetFloat("volume", out usfxvol);
+
+		float desSeqVol = Mathf.Lerp(-40, 0, flow);
+		float newSeqVol = Mathf.MoveTowards(vol, desSeqVol, 1f);
+
+		float desLowPass = Mathf.Lerp(lowPassMin, lowPassMax, flow);
+		float newLowpassVal = Mathf.MoveTowards(lowPassVal, desLowPass, 1f);
+
+		float desSFXVol = Mathf.Lerp(-40, 0, 1-flow);
+		float newSFXVol = Mathf.MoveTowards(sfxvol, desSFXVol, 1f);
+
+		sequencers.SetFloat("Volume", newSeqVol);
+		//sequencers.SetFloat("lowPassFreq", lowPassVal+=3f);
+		sfxMaster.SetFloat("volume", newSFXVol);
+		//underwaterSFXMaster.SetFloat("Volume", usfxvol-=0.1f);
+
 	}
 
 	public void LowerSFXOctave() {

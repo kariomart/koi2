@@ -29,7 +29,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8284064235065260848}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -4.61, y: 0, z: -1.28}
+  m_LocalPosition: {x: -5.056, y: 0, z: -1.28}
   m_LocalScale: {x: 1.1821223, y: 1.1821221, z: 1.1821221}
   m_Children: []
   m_Father: {fileID: 0}
@@ -290,8 +290,8 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 0.072}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 1, g: 0.3915094, b: 0.7758599, a: 0.7647059}
-        key1: {r: 1, g: 0.3915094, b: 0.7758599, a: 1}
+        key0: {r: 0.9716981, g: 0.9487807, b: 0.9632704, a: 0.7647059}
+        key1: {r: 0.9622642, g: 0.94864726, b: 0.9572567, a: 1}
         key2: {r: 0.9862069, g: 1, b: 0, a: 0}
         key3: {r: 1, g: 0.7241379, b: 0, a: 0}
         key4: {r: 1, g: 0, b: 0, a: 0}
@@ -2633,11 +2633,11 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
   NoiseModule:
-    enabled: 0
+    enabled: 1
     strength:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1
+      scalar: 0.36
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -2794,12 +2794,12 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     separateAxes: 0
-    frequency: 1
+    frequency: 0.37
     damping: 1
     octaves: 1
     octaveMultiplier: 0.5
     octaveScale: 2
-    quality: 2
+    quality: 1
     scrollSpeed:
       serializedVersion: 2
       minMaxState: 0
@@ -3015,9 +3015,9 @@ ParticleSystem:
     remapEnabled: 0
     positionAmount:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 3
       scalar: 1
-      minScalar: 1
+      minScalar: 0.9
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -4726,6 +4726,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 423be98c30f194dfe9b52a5349fb9789, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  particles: {fileID: 0}
   dis: 0
   range: 4
   pos: {x: 0, y: 0}
@@ -4750,7 +4751,8 @@ AudioSource:
   m_GameObject: {fileID: 8284064235065260848}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 243265323373130010, guid: 5aafe7c061f7241e4bd6915088c7c287,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
