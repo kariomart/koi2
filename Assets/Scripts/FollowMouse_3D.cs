@@ -96,6 +96,7 @@ public class FollowMouse_3D : MonoBehaviour {
   // Update is called once per frame
   void FixedUpdate () {
 
+
         if (!GameMaster.me.flowMode) {
             checkAmbientMode();
         }
@@ -149,12 +150,14 @@ public class FollowMouse_3D : MonoBehaviour {
 
         AudioManager.Instance.updateDebug();
 
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            GameMaster.me.spawnFriend();
-        }
+        if (GameMaster.me.debug) {
+            if (Input.GetKeyDown(KeyCode.Space)) {
+                GameMaster.me.spawnFriend();
+            }
 
-        if (Input.GetKeyDown(KeyCode.A)) {
-            GameMaster.me.ambientMode = !GameMaster.me.ambientMode;
+            if (Input.GetKeyDown(KeyCode.A)) {
+                GameMaster.me.ambientMode = !GameMaster.me.ambientMode;
+            }
         }
 
         float scale = transform.localScale.x;
@@ -203,13 +206,15 @@ public class FollowMouse_3D : MonoBehaviour {
 
 
     void checkAmbientMode() {
-        // ambientTimer ++;
+        if (speed == 0) {
+            ambientTimer ++;
+        }
 
         // if (ambientTimer > 1000 && !GameMaster.me.ambientMode) {
         //     GameMaster.me.ambientMode = true;
         // }
 
-        if (speed == 0 && gameStartedTimer>ambientModeLockout) {
+        if (speed == 0 && gameStartedTimer>ambientModeLockout && ambientTimer > 180) {
             GameMaster.me.ambientMode = true;
             reticle.gameObject.SetActive(false);
         }
@@ -241,6 +246,10 @@ public class FollowMouse_3D : MonoBehaviour {
         
         
         float vol = Mathf.Lerp(minVolume, maxVol, mouseTimer/droneTime);
+        if (GameMaster.me.ambientMode) {
+            vol+= 0.001f;
+            vol = Mathf.Clamp(vol, maxVol, minVolume);
+        }
         droneSource.volume = vol;
         float panPosition = pos.x - cam.transform.position.x;
         panPosition = AudioManager.RemapFloat(panPosition, -3f, 3f, -.4f, .4f);
@@ -279,12 +288,11 @@ public class FollowMouse_3D : MonoBehaviour {
                     GameMaster.me.tryToSpawnFriend();
                 }
 
-                if (foodCounter != 8 && foodCounter % 8 == 0) {
+                if (foodCounter != 10 && foodCounter % 10 == 0) {
                     GameMaster.me.spawnFriend();
                 }
             }
 		}
-
         Destroy(coll.gameObject);
 
         if (coll.gameObject.layer == LayerMask.NameToLayer("FoodRange")) {

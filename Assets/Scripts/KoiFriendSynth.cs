@@ -45,6 +45,7 @@ public class KoiFriendSynth : MonoBehaviour
         if (sNote < 128) {
             GameMaster.me.sequencer.AddNote(note-12, sNote, sNote+1, Mathf.Clamp(strength,.2f,.5f));
             GameMaster.me.sequencerNote++;
+            GameMaster.me.sequencer.length = GameMaster.me.sequencerNote;
         } /*else {
             if (!GameMaster.me.gameover) {
                 GameMaster.me.gameover=true;

@@ -46,9 +46,12 @@ public class AudioManager : MonoBehaviour {
 	public AudioMixerGroup sfxMixer;
 	public AudioMixerGroup underwaterSFXMixer;
 	public AudioMixerGroup sequencerMixers;
+	public AudioMixerGroup synthMixer;
+
 	public AudioMixer ambienceMaster;
 	public AudioMixer sfxMaster;
 	public AudioMixer underwaterSFXMaster;
+	public AudioMixer synthMaster;
 	public AudioMixer sequencers;
 
 	float lowPassMin = 500f;
@@ -76,14 +79,15 @@ public class AudioManager : MonoBehaviour {
 
 		//DontDestroyOnLoad(this.gameObject);
 		scales[0] = pentatonicScaleC3;
-		scales[1] = mixolydianScale;
-		scales[2] = dorianScale;
-		scales[3] = pentatonicScaleC2;
+		//scales[1] = mixolydianScale;
+		//scales[2] = dorianScale;
+		//scales[3] = pentatonicScaleC2;
 
 		ambienceMaster = abstractAmbience.audioMixer;
 		sfxMaster = sfxMixer.audioMixer;
 		underwaterSFXMaster = underwaterSFXMixer.audioMixer;
 		sequencers = sequencerMixers.audioMixer;
+		synthMaster = synthMixer.audioMixer;
 		setMixDefaults();
 		// if (SceneManager.GetActiveScene().name == "Menu") {
 		// 	StartMenu();
@@ -128,18 +132,22 @@ public class AudioManager : MonoBehaviour {
 
 	public void PlayRandomAboveWaterSFX() {
 		AudioClip sfx;
-		int rand = Random.Range(0, aboveWaterSFX.Count);
-		sfx = aboveWaterSFX[rand];	
-		aboveWaterSFX.Remove(sfx);
-		CreateRandomSound(sfx, 1.0f, 1, sfxMixer);
+		if (aboveWaterSFX.Count > 0) {
+			int rand = Random.Range(0, aboveWaterSFX.Count);
+			sfx = aboveWaterSFX[rand];	
+			aboveWaterSFX.Remove(sfx);
+			CreateRandomSound(sfx, 1.0f, 1, sfxMixer);
+		}
 	}
 
 	public void PlayRandomUnderwaterSFX() {
 		AudioClip sfx;
-		int rand = Random.Range(0, underwaterSFX.Count);
-		sfx = underwaterSFX[rand];	
-		underwaterSFX.Remove(sfx);
-		CreateRandomSound(sfx, 1.0f, 1, underwaterSFXMixer);
+		if (underwaterSFX.Count > 0) {
+			int rand = Random.Range(0, underwaterSFX.Count);
+			sfx = underwaterSFX[rand];	
+			underwaterSFX.Remove(sfx);
+			CreateRandomSound(sfx, 1.0f, 1, underwaterSFXMixer);
+		}
 	}
 
 	public void PlayRandomWeatherSFX() {
@@ -269,7 +277,6 @@ public class AudioManager : MonoBehaviour {
  
 
 		sequencers.SetFloat("lowPassFreq", lowPassVal+=3f);
-
 		sfxMaster.SetFloat("volume", sfxvol-=0.1f);
 		underwaterSFXMaster.SetFloat("Volume", usfxvol-=0.1f);
 
@@ -341,25 +348,33 @@ public class AudioManager : MonoBehaviour {
 
 	public void SequencerFilters(float flow) {
 
-		float lowPassVal, vol, sfxvol, usfxvol;
+		float lowPassVal, vol, sfxvol, usfxvol, sSfxVol;
 		sequencers.GetFloat("lowPassFreq", out lowPassVal);
 		sequencers.GetFloat("Volume", out vol);
 		sfxMaster.GetFloat("volume", out sfxvol);
+		synthMaster.GetFloat("Volume", out sSfxVol);
 		underwaterSFXMaster.GetFloat("volume", out usfxvol);
 
 		float desSeqVol = Mathf.Lerp(-40, 0, flow);
-		float newSeqVol = Mathf.MoveTowards(vol, desSeqVol, 1f);
+		float newSeqVol = Mathf.MoveTowards(vol, desSeqVol, .1f);
 
 		float desLowPass = Mathf.Lerp(lowPassMin, lowPassMax, flow);
-		float newLowpassVal = Mathf.MoveTowards(lowPassVal, desLowPass, 1f);
+		float newLowpassVal = Mathf.MoveTowards(lowPassVal, desLowPass, .1f);
 
 		float desSFXVol = Mathf.Lerp(-40, 0, 1-flow);
-		float newSFXVol = Mathf.MoveTowards(sfxvol, desSFXVol, 1f);
+		float newSFXVol = Mathf.MoveTowards(sfxvol, desSFXVol, .1f);
+
+		float desUSFXVol = Mathf.Lerp(-40, 0, 1-flow);
+		float newUSFXVol = Mathf.MoveTowards(usfxvol, desUSFXVol, .1f);
+
+		float desSSFXVol = Mathf.Lerp(-15, 5, 1-flow);
+		float newSSFXVol = Mathf.MoveTowards(sSfxVol, desSSFXVol, .1f);
 
 		sequencers.SetFloat("Volume", newSeqVol);
 		//sequencers.SetFloat("lowPassFreq", lowPassVal+=3f);
 		sfxMaster.SetFloat("volume", newSFXVol);
-		//underwaterSFXMaster.SetFloat("Volume", usfxvol-=0.1f);
+		underwaterSFXMaster.SetFloat("volume", newUSFXVol);
+		synthMaster.SetFloat("Volume", newSSFXVol);
 
 	}
 

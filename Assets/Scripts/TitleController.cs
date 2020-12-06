@@ -20,25 +20,18 @@ public class TitleController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
-		if (!GameMaster.me.WVMode) {
-			if (Input.GetMouseButtonDown(0) && !started) {
-				player.enabled = true;
-				player.changeMaterial();
-				//AudioManager.Instance.PlaySFX(a, .1f, 1, AudioManager.Instance.abstractAmbience);
-				started=true;
-				//Destroy(this.gameObject, 8f);
-				fading = true;
-			}
-		} else {
+	
+		if (Input.GetMouseButtonDown(0) && !started) {
 			player.enabled = true;
+			player.changeMaterial();
+			//AudioManager.Instance.PlaySFX(a, .1f, 1, AudioManager.Instance.abstractAmbience);
 			started=true;
+			//Destroy(this.gameObject, 8f);
 			fading = true;
 		}
-
-		if (fading) {
-			t.color = new Color(t.color.r, t.color.g, t.color.b, t.color.a - .01f);
-		}
-
+	if (fading) {
+		t.color = new Color(t.color.r, t.color.g, t.color.b, t.color.a - .01f);
 	}
+}	
+
 }

@@ -73,18 +73,18 @@ public class GameMaster : MonoBehaviour {
 	public int friendDroneNoteIndex;
 	public int [] major7th = {0, 4, 3, 4};
 
-	public bool WVMode;
-	public int restartTimer;
-
 	public bool desktopMode;
 
 	public float flow;
 	public float flowTime;
+	public float maxFlowTime;
 	float maxFlowTimer = 6000;
-	float flowTimer = 1200;
+	public float flowTimer = 240;
 	public bool resetting;
 	public int resetTime;
 	int resetTimer = 240;
+
+	public bool debug;
 
 	// Use this for initialization
 	void Start () {
@@ -121,14 +121,17 @@ public class GameMaster : MonoBehaviour {
 			DayNightCycle();
 		} else {
 			flowTime ++;
+			maxFlowTime++;
 		}
 
-		if (flowTime > flowTimer) {
+		if (maxFlowTime > maxFlowTimer && !ambientMode) {
 			ResetGame();
 		}
 
 		if (flow >= 1 && !resetting && !flowMode) {
 			flowMode = true;
+			flowTime = 0;
+			maxFlowTime = 0;
 			effects.SetDay();
 		}
 
@@ -137,6 +140,7 @@ public class GameMaster : MonoBehaviour {
 
 			if (resetTime > resetTimer) {
 				resetting = false;
+				resetTime = 0;
 			}
 		}
 
@@ -146,17 +150,6 @@ public class GameMaster : MonoBehaviour {
 			AudioManager.Instance.spatializeSFX();
 		}
 
-		if (Input.GetKeyDown(KeyCode.Q)) {
-			player.enabled=!player.enabled;
-		}
-
-		if (Input.GetKeyDown(KeyCode.W)) {
-			sequencer.enabled=!sequencer.enabled;
-			sequencerChords.enabled=!sequencerChords.enabled;
-			whaleSequencer.enabled=!whaleSequencer.enabled;
-			rainSequencer.enabled=!rainSequencer.enabled;
-			gameover=true;
-		}
 
 		int rand = Random.Range(0, sfxChance);
 		
@@ -234,13 +227,44 @@ public class GameMaster : MonoBehaviour {
 			if (dropChance < 10) {
 				rainStopChance--;
 			}
+		
+		}
+		
+	}
+
+	void Update() {
+
+		if (Input.GetKeyDown(KeyCode.Z)) {
+			debug = !debug;
+
+			if (debug) {
+				effects.ShiftHue(80);
+			} else {
+				effects.setHue(0);
+			}
+		}
+
+		if (Input.GetKeyDown(KeyCode.P)) {
+				ScreenCapture.CaptureScreenshot("koiScreenshot" + (Random.Range(0, 100)).ToString());
+		}
+
+		if (debug) {
+			if (Input.GetKeyDown(KeyCode.Q)) {
+				player.enabled=!player.enabled;
+			}
+
+			if (Input.GetKeyDown(KeyCode.W)) {
+	
+			}
+
 
 			if (Input.GetKeyDown(KeyCode.Escape)) {
 				UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
 			}
-		
+
 		}
-		
+
+
 	}
 
 	public void DayNightCycle() {
@@ -367,12 +391,15 @@ public class GameMaster : MonoBehaviour {
 		resetting=true;
 		time = 0;
 		isDay = true;
+		sequencer.Clear();
+		sequencerNote = 0;
 		AudioManager.Instance.aboveWaterSFX = new List<AudioClip>(AudioManager.Instance.aboveWaterSFXBackup);
 		Start();
 		//effects.setBloom(15);
 		effects.SetDay();
 		Debug.Log("resetting");
-		flowTimer = 0;
+		flowTime = 0;
+		maxFlowTime = 0;
 		//clear out sequencers
 	}
 

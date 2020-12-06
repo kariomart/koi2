@@ -171,6 +171,10 @@ public class EffectController : MonoBehaviour
         desiredHue = Random.Range(-180, 180);
     }
 
+    public void ShiftHue(float hue) {
+        colorGradingLayer.hueShift.value = hue;
+    }
+
     public void SetDay() {
         colorGradingLayer.saturation.value = daySat;
         colorGradingLayer.hueShift.value = dayHue;

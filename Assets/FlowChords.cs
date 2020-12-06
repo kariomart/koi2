@@ -36,7 +36,6 @@ public class FlowChords : MonoBehaviour
             synth.NoteOn(note1, strength);
             synth.NoteOn(note2, strength);
             GameMaster.me.effects.ShiftHue();
-            GameMaster.me.flowTime = 0;
             scaleFriends(true);
         } else {
             GameMaster.me.ResetGame();
@@ -70,6 +69,12 @@ public class FlowChords : MonoBehaviour
                 //Debug.Log("noting!");
                 playChord(); 
                 GameMaster.me.player.spawnRipple(GameMaster.me.player.mouseDeciple.transform.position);
+                GameMaster.me.maxFlowTime = 0;
+                GameMaster.me.flowTime = Random.Range(0, 60);
+            } else if (GameMaster.me.flowTime > GameMaster.me.flowTimer && GameMaster.me.ambientMode) {
+                stopChord();
+                playChord();
+                GameMaster.me.flowTime=0;
             }
 
             if (Input.GetMouseButtonUp(0)) {

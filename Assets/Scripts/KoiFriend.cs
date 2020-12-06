@@ -28,7 +28,8 @@ public class KoiFriend : MonoBehaviour
     public AudioSource drone;
     public bool droning;
 
-    float bloomAmt = .4f;
+    float chordBloom = .1f;
+    float noteBloom = .2f;
 
     // Start is called before the first frame update
     void Start()
@@ -116,21 +117,21 @@ public class KoiFriend : MonoBehaviour
         Debug.Log(name, synthAudio);
         synthAudio.panStereo = AudioManager.Instance.getPan(transform);     
         sfx.playNote(pos, player.pos);
-        
+        player.effects.addBloom(noteBloom);
         addSize();
     }
 
     public void playChordNote() {
 
         chordSynth.playNote(2,-17);
-        player.effects.addBloom(bloomAmt);
+        player.effects.addBloom(chordBloom);
 
     }
 
     public void playFriendSound() {
 
         friendSynth.playNote(1.5f,-22);
-        player.effects.addBloom(bloomAmt);
+        player.effects.addBloom(noteBloom);
 
     }
 
